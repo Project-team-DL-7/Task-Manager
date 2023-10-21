@@ -1,0 +1,24 @@
+{
+  "name": "task-manager",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Project-team-DL-7/Task-Manager.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Project-team-DL-7/Task-Manager/issues"
+  },
+  "homepage": "https://github.com/Project-team-DL-7/Task-Manager#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
