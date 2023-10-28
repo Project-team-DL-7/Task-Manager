@@ -1,0 +1,11 @@
+version: '1'
+services:
+  app:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/usr/src/app
+    command: ["nodemon", "index.js"]
