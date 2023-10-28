@@ -57,8 +57,7 @@ router.get('/:id', (req, res) => {
  *        description: User created
  */
 router.post('/', (req, res) => {
-  const newUser = new User(null, req.body.email, req.body.username, req.body.password, req.body.registrationDate);
-  const createdUser = UserService.createUser(newUser);
+  const createdUser = UserService.createUser(req.body);
   res.status(201).json(createdUser);
 });
 
@@ -119,8 +118,7 @@ router.delete('/:id', (req, res) => {
  *        description: User not found
  */
 router.put('/', (req, res) => {
-  const userToUpdate = new User(req.body.id, req.body.email, req.body.username, req.body.password, req.body.registrationDate);
-  const updatedUser = UserService.updateUser(userToUpdate);
+  const updatedUser = UserService.updateUser(req.body);
   if (updatedUser) {
     res.status(200).json(updatedUser);
   } else {
