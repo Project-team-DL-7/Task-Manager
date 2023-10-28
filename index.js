@@ -32,5 +32,5 @@ app.use('/task', TaskController);
 app.use('/project', ProjectController);
 
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}/`);
+  console.log(`Server documentation running on http://localhost:${PORT}/api-docs/`);
 });
