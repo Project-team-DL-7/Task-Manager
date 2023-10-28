@@ -8,6 +8,14 @@ class UserManager {
   createUser(user) {
     return UserRepository.addUser(user);
   }
+
+  deleteUserById(user) {
+    return UserRepository.deleteUserById(id);
+  }
+
+  updateUser(user) {
+    return UserRepository.updateUser(user);
+  }
 }
 
 module.exports = new UserManager();
