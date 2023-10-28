@@ -1,6 +1,6 @@
 const UserRepository = require('../infrastructure/storage/UserRepository');
 
-class UserManager {
+class UserService {
   getUserById(id) {
     return UserRepository.findUserById(id);
   }
@@ -18,4 +18,4 @@ class UserManager {
   }
 }
 
-module.exports = new UserManager();
+module.exports = new UserService();
