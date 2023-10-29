@@ -17,7 +17,7 @@ class UserService {
 
   createUser(user) {
     const newUser = this.makePostUserInstance(user);
-    console.log(`Create new ${JSON.stringify(newUser, null, 2)}`);
+    console.log(`Create new User ${JSON.stringify(newUser, null, 2)}`);
     return UserRepository.addUser(newUser);
   }
 
@@ -28,7 +28,7 @@ class UserService {
 
   updateUser(user) {
     const updatedUser = this.makeUpdateUserInstance(user);
-    console.log(`Update ${JSON.stringify(updatedUser, null, 2)}`);
+    console.log(`Update User ${JSON.stringify(updatedUser, null, 2)}`);
     return UserRepository.updateUser(updatedUser);
   }
 }

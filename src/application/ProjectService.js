@@ -17,18 +17,18 @@ class ProjectService {
 
   createProject(project) {
     const newProject = this.makePostProjectInstance(project);
-    console.log(`Create new ${JSON.stringify(newProject, null, 2)}`);
+    console.log(`Create new Project ${JSON.stringify(newProject, null, 2)}`);
     return ProjectRepository.addProject(newProject);
   }
 
   deleteProjectById(id_project) {
-    console.log(`Delete Project with id_project: ${id}`)
+    console.log(`Delete Project with id_project: ${id_project}`)
     return ProjectRepository.deleteProjectById(id_project);
   }
 
   updateProject(project) {
     const updatedProject = this.makeUpdateProjectInstance(project);
-    console.log(`Update ${JSON.stringify(updatedProject, null, 2)}`);
+    console.log(`Update Project ${JSON.stringify(updatedProject, null, 2)}`);
     return ProjectRepository.updateProject(updatedProject);
   }
 }

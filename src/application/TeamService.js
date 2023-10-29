@@ -17,7 +17,7 @@ class TeamService {
 
   createTeam(team) {
     const newTeam = this.makePostTeamInstance(team);
-    console.log(`Create new ${JSON.stringify(newTeam, null, 2)}`);
+    console.log(`Create new Team ${JSON.stringify(newTeam, null, 2)}`);
     return TeamRepository.addTeam(newTeam);
   }
 
@@ -28,7 +28,7 @@ class TeamService {
 
   updateTeam(team) {
     const updatedTeam = this.makeUpdateTeamInstance(team);
-    console.log(`Update ${JSON.stringify(updatedTeam, null, 2)}`);
+    console.log(`Update Team ${JSON.stringify(updatedTeam, null, 2)}`);
     return TeamRepository.updateTeam(updatedTeam);
   }
 }

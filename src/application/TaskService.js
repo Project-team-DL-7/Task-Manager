@@ -17,7 +17,7 @@ class TaskService {
 
   createTask(task) {
     const newTask = this.makePostTaskInstance(task);
-    console.log(`Create new ${JSON.stringify(newTask, null, 2)}`);
+    console.log(`Create new Task ${JSON.stringify(newTask, null, 2)}`);
     return TaskRepository.addTask(newTask);
   }
 
@@ -28,7 +28,7 @@ class TaskService {
 
   updateTask(task) {
     const updatedTask = this.makeUpdateTaskInstance(task);
-    console.log(`Update ${JSON.stringify(updatedTask, null, 2)}`);
+    console.log(`Update Task ${JSON.stringify(updatedTask, null, 2)}`);
     return TaskRepository.updateTask(updatedTask);
   }
 }
