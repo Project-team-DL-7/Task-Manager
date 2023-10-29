@@ -1,3 +1,5 @@
+const Team = require('../../domain/Team');
+
 class TeamRepository {
   constructor() {
     // Dummy in-memory storage
@@ -10,19 +12,20 @@ class TeamRepository {
 
   // Find a team by ID
   findTeamById(id_team) {
-    return this.teams.find(team => team.id_team === id_team) || null;
+    return this.teams.find(team => team.id_team == id_team) || null;
   }
 
   // Add a new team
   addTeam(team) {
+    team.id_team = (this.teams[this.teams.length - 1]).id_team + 1;
     this.teams.push(team);
     return team;
   }
 
   // Delete a team by ID
   deleteTeamById(id_team) {
-    const teamIndex = this.teams.findIndex(team => team.id_team === id_team);
-    if (teamIndex !== -1) {
+    const teamIndex = this.teams.findIndex(team => team.id_team == id_team);
+    if (teamIndex != -1) {
       const [deletedTeam] = this.teams.splice(teamIndex, 1);
       return deletedTeam;
     }
@@ -31,8 +34,8 @@ class TeamRepository {
 
   // Update team details
   updateTeam(teamToUpdate) {
-    const teamIndex = this.teams.findIndex(team => team.id_team === teamToUpdate.id_team);
-    if (teamIndex !== -1) {
+    const teamIndex = this.teams.findIndex(team => team.id_team == teamToUpdate.id_team);
+    if (teamIndex != -1) {
       this.teams[teamIndex] = teamToUpdate;
       return teamToUpdate;
     }
@@ -40,4 +43,4 @@ class TeamRepository {
   }
 }
 
-module.exports = TeamRepository;
+module.exports = new TeamRepository();

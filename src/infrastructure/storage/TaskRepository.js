@@ -1,3 +1,5 @@
+const Task = require('../../domain/Task');
+
 class TaskRepository {
   constructor() {
     // Dummy in-memory storage
@@ -10,19 +12,20 @@ class TaskRepository {
 
   // Find a task by ID
   findTaskById(id_task) {
-    return this.tasks.find(task => task.id_task === id_task) || null;
+    return this.tasks.find(task => task.id_task == id_task) || null;
   }
 
   // Add a new task
   addTask(task) {
+    task.id_task = (this.tasks[this.tasks.length - 1]).id_task + 1;
     this.tasks.push(task);
     return task;
   }
 
   // Delete a task by ID
   deleteTaskById(id_task) {
-    const taskIndex = this.tasks.findIndex(task => task.id_task === id_task);
-    if (taskIndex !== -1) {
+    const taskIndex = this.tasks.findIndex(task => task.id_task == id_task);
+    if (taskIndex != -1) {
       const [deletedTask] = this.tasks.splice(taskIndex, 1);
       return deletedTask;
     }
@@ -31,8 +34,8 @@ class TaskRepository {
 
   // Update task details
   updateTask(taskToUpdate) {
-    const taskIndex = this.tasks.findIndex(task => task.id_task === taskToUpdate.id_task);
-    if (taskIndex !== -1) {
+    const taskIndex = this.tasks.findIndex(task => task.id_task == taskToUpdate.id_task);
+    if (taskIndex != -1) {
       this.tasks[taskIndex] = taskToUpdate;
       return taskToUpdate;
     }
@@ -40,5 +43,5 @@ class TaskRepository {
   }
 }
 
-module.exports = TaskRepository;
+module.exports = new TaskRepository();
   

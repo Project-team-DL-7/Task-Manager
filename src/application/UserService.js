@@ -1,20 +1,35 @@
+const User = require('../domain/User');
 const UserRepository = require('../infrastructure/storage/UserRepository');
 
 class UserService {
-  getUserById(id) {
-    return UserRepository.findUserById(id);
+  makePostUserInstance(user) {
+    return new User(0, user.email, user.username, user.password, user.registrationDate);
+  }
+
+  makeUpdateUserInstance(user) {
+    return new User(user.id_user, user.email, user.username, user.password, user.registrationDate);
+  } 
+
+  getUserById(id_user) {
+    console.log(`Get User with id_user: ${id_user}`)
+    return UserRepository.findUserById(id_user);
   }
 
   createUser(user) {
-    return UserRepository.addUser(user);
+    const newUser = this.makePostUserInstance(user);
+    console.log(`Create new User ${JSON.stringify(newUser, null, 2)}`);
+    return UserRepository.addUser(newUser);
   }
 
-  deleteUserById(user) {
-    return UserRepository.deleteUserById(id);
+  deleteUserById(id_user) {
+    console.log(`Delete User with id_user: ${id_user}`)
+    return UserRepository.deleteUserById(id_user);
   }
 
   updateUser(user) {
-    return UserRepository.updateUser(user);
+    const updatedUser = this.makeUpdateUserInstance(user);
+    console.log(`Update User ${JSON.stringify(updatedUser, null, 2)}`);
+    return UserRepository.updateUser(updatedUser);
   }
 }
 
