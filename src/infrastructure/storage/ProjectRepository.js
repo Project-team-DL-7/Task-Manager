@@ -12,19 +12,20 @@ class ProjectRepository {
 
   // Find a project by ID
   findProjectById(id_project) {
-    return this.projects.find(project => project.id_project === id_project) || null;
+    return this.projects.find(project => project.id_project == id_project) || null;
   }
 
   // Add a new project
   addProject(project) {
+    project.id_project = (this.projects[this.projects.length - 1]).id_project + 1;
     this.projects.push(project);
     return project;
   }
 
   // Delete a project by ID
   deleteProjectById(id_project) {
-    const projectIndex = this.projects.findIndex(project => project.id_project === id_project);
-    if (projectIndex !== -1) {
+    const projectIndex = this.projects.findIndex(project => project.id_project == id_project);
+    if (projectIndex != -1) {
       const [deletedProject] = this.projects.splice(projectIndex, 1);
       return deletedProject;
     }
@@ -33,8 +34,8 @@ class ProjectRepository {
 
   // Update project details
   updateProject(projectToUpdate) {
-    const projectIndex = this.projects.findIndex(project => project.id_project === projectToUpdate.id_project);
-    if (projectIndex !== -1) {
+    const projectIndex = this.projects.findIndex(project => project.id_project == projectToUpdate.id_project);
+    if (projectIndex != -1) {
       this.projects[projectIndex] = projectToUpdate;
       return projectToUpdate;
     }
