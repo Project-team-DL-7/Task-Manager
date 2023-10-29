@@ -79,7 +79,7 @@ router.post('/', (req, res) => {
  *        description: User not found
  */
 router.delete('/:id_user', (req, res) => {
-  const result = UserService.deleteUserByid_user(req.params.id_user);
+  const result = UserService.deleteUserById(req.params.id_user);
   if (result) {
     res.status(200).json({ message: "User deleted" });
   } else {
