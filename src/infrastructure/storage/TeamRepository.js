@@ -1,3 +1,5 @@
+const Team = require('../../domain/Team');
+
 class TeamRepository {
   constructor() {
     // Dummy in-memory storage
@@ -40,4 +42,4 @@ class TeamRepository {
   }
 }
 
-module.exports = TeamRepository;
+module.exports = new TeamRepository();

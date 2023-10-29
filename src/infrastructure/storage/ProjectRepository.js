@@ -1,3 +1,5 @@
+const Project = require('../../domain/Project');
+
 class ProjectRepository {
   constructor() {
     // Dummy in-memory storage
@@ -40,4 +42,4 @@ class ProjectRepository {
   }
 }
 
-module.exports = ProjectRepository;
+module.exports = new ProjectRepository();

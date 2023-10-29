@@ -18,6 +18,9 @@ const swaggerDocs = swaggerJsDoc(swaggerOptions);
 const app = express();
 const PORT = 5000;
 
+// use JSONs
+app.use(express.json());
+
 // Use Swagger
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 

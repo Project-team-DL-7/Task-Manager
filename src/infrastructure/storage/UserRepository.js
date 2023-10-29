@@ -1,3 +1,5 @@
+const User = require('../../domain/User');
+
 class UserRepository {
   constructor() {
     // Dummy in-memory storage
@@ -10,19 +12,20 @@ class UserRepository {
 
   // Find a user by ID
   findUserById(id) {
-    return this.users.find(user => user.id === id) || null;
+    return this.users.find(user => user.id == id) || null;
   }
 
   // Add a new user
   addUser(user) {
+    user.id = (this.users[this.users.length - 1]).id + 1;
     this.users.push(user);
     return user;
   }
 
   // Delete a user by ID
   deleteUserById(id) {
-    const userIndex = this.users.findIndex(user => user.id === id);
-    if (userIndex !== -1) {
+    const userIndex = this.users.findIndex(user => user.id == id);
+    if (userIndex != -1) {
       const [deletedUser] = this.users.splice(userIndex, 1);
       return deletedUser;
     }
@@ -31,8 +34,8 @@ class UserRepository {
 
   // Update user details
   updateUser(userToUpdate) {
-    const userIndex = this.users.findIndex(user => user.id === userToUpdate.id);
-    if (userIndex !== -1) {
+    const userIndex = this.users.findIndex(user => user.id == userToUpdate.id);
+    if (userIndex != -1) {
       this.users[userIndex] = userToUpdate;
       return userToUpdate;
     }
@@ -40,5 +43,5 @@ class UserRepository {
   }
 }
 
-module.exports = UserRepository;
+module.exports = new UserRepository();
   

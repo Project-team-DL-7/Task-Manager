@@ -1,3 +1,5 @@
+const Task = require('../../domain/Task');
+
 class TaskRepository {
   constructor() {
     // Dummy in-memory storage
@@ -40,5 +42,5 @@ class TaskRepository {
   }
 }
 
-module.exports = TaskRepository;
+module.exports = new TaskRepository();
   
