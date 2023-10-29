@@ -6,13 +6,13 @@ const router = express.Router();
 
 /**
  * @swagger
- * /user/{id}:
+ * /user/{id_user}:
  *  get:
  *    tags:
  *      - User
- *    description: Get user by ID
+ *    description: Get user by id_user
  *    parameters:
- *    - name: id
+ *    - name: id_user
  *      in: path
  *      required: true
  *    responses:
@@ -21,8 +21,8 @@ const router = express.Router();
  *      '404':
  *        description: User not found
  */
-router.get('/:id', (req, res) => {
-  const user = UserService.getUserById(req.params.id);
+router.get('/:id_user', (req, res) => {
+  const user = UserService.getUserById(req.params.id_user);
   if (user) {
     res.status(200).json(user);
   } else {
@@ -63,13 +63,13 @@ router.post('/', (req, res) => {
 
 /**
  * @swagger
- * /user/{id}:
+ * /user/{id_user}:
  *  delete:
  *    tags:
  *      - User
- *    description: Delete user by ID
+ *    description: Delete user by id_user
  *    parameters:
- *    - name: id
+ *    - name: id_user
  *      in: path
  *      required: true
  *    responses:
@@ -78,8 +78,8 @@ router.post('/', (req, res) => {
  *      '404':
  *        description: User not found
  */
-router.delete('/:id', (req, res) => {
-  const result = UserService.deleteUserById(req.params.id);
+router.delete('/:id_user', (req, res) => {
+  const result = UserService.deleteUserByid_user(req.params.id_user);
   if (result) {
     res.status(200).json({ message: "User deleted" });
   } else {
@@ -101,7 +101,7 @@ router.delete('/:id', (req, res) => {
  *      schema:
  *        type: object
  *        properties:
- *          id:
+ *          id_user:
  *            type: integer
  *          email:
  *            type: string

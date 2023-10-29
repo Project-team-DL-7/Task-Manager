@@ -7,12 +7,12 @@ class UserService {
   }
 
   makeUpdateUserInstance(user) {
-    return new User(user.id, user.email, user.username, user.password, user.registrationDate);
+    return new User(user.id_user, user.email, user.username, user.password, user.registrationDate);
   } 
 
-  getUserById(id) {
-    console.log(`Get User with id: ${id}`)
-    return UserRepository.findUserById(id);
+  getUserById(id_user) {
+    console.log(`Get User with id_user: ${id_user}`)
+    return UserRepository.findUserById(id_user);
   }
 
   createUser(user) {
@@ -21,9 +21,9 @@ class UserService {
     return UserRepository.addUser(newUser);
   }
 
-  deleteUserById(id) {
-    console.log(`Delete User with id: ${id}`)
-    return UserRepository.deleteUserById(id);
+  deleteUserById(id_user) {
+    console.log(`Delete User with id_user: ${id_user}`)
+    return UserRepository.deleteUserById(id_user);
   }
 
   updateUser(user) {
