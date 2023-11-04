@@ -1,11 +1,27 @@
 version: '1'
 services:
   app:
-    build: 
+    build:
       context: .
       dockerfile: Dockerfile
     ports:
       - "${PORT}:${PORT}"
     volumes:
       - .:/usr/src/app
-    command: ["nodemon", "index.js"]
+    command: [ "nodemon", "index.js" ]
+    depends_on:
+      - postgres
+  postgres:
+    image: postgres:16.0-alpine
+    ports:
+      - '5433:5432'
+    # this persists data between runs
+    volumes:
+      - database-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: postgres
+
+volumes:
+  database-data: {}
