@@ -1,6 +1,7 @@
 const express = require('express');
 const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
+require('dotenv').config()
 
 // Swagger setup
 const swaggerOptions = {
@@ -16,7 +17,7 @@ const swaggerOptions = {
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
 
 const app = express();
-const PORT = 5000;
+const PORT = process.env.PORT
 
 // use JSONs
 app.use(express.json());
