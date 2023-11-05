@@ -83,7 +83,7 @@ const teamsToProjects = pgTable(
   {
     teamId: integer("team_id")
       .notNull()
-      .references(() => users.id),
+      .references(() => teams.id),
     projectId: integer("project_id")
       .notNull()
       .references(() => projects.id),
