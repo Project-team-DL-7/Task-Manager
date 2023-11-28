@@ -12,8 +12,8 @@ const {
 const teams = pgTable(
   "teams",
   {
-    id: serial("id").primaryKey(),
-    name: text("name").notNull(),
+    id_team: serial("id").primaryKey(),
+    team_name: text("name").notNull(),
     description: text("description"),
   },
   (teams) => {
@@ -30,11 +30,11 @@ const teamsRelations = relations(teams, ({ many }) => ({
 }));
 
 const users = pgTable("users", {
-  id: serial("id").primaryKey(),
+  id_user: serial("id").primaryKey(),
   email: text("email").unique().notNull(),
   username: text("username").unique().notNull(),
   password: text("password").notNull(),
-  registeredAt: timestamp("registeredAt").defaultNow().notNull(),
+  registrationDate: timestamp("registeredAt").defaultNow().notNull(),
 });
 
 const usersRelations = relations(users, ({ many }) => ({
@@ -60,16 +60,16 @@ const usersToTeams = pgTable(
 const usersToTeamsRelations = relations(usersToTeams, ({ one }) => ({
   team: one(teams, {
     fields: [usersToTeams.teamId],
-    references: [teams.id],
+    references: [teams.id_team],
   }),
   user: one(users, {
     fields: [usersToTeams.userId],
-    references: [users.id],
+    references: [users.id_user],
   }),
 }));
 
 const projects = pgTable("projects", {
-  id: serial("id").primaryKey(),
+  id_project: serial("id").primaryKey(),
   description: text("description"),
 });
 
@@ -83,10 +83,10 @@ const teamsToProjects = pgTable(
   {
     teamId: integer("team_id")
       .notNull()
-      .references(() => teams.id),
+      .references(() => teams.id_team),
     projectId: integer("project_id")
       .notNull()
-      .references(() => projects.id),
+      .references(() => projects.id_project),
   },
   (t) => ({
     pk: primaryKey(t.teamId, t.projectId),
@@ -94,24 +94,24 @@ const teamsToProjects = pgTable(
 );
 
 const tasks = pgTable("tasks", {
-  id: serial("id").primaryKey(),
-  projectId: integer("project_id").references(() => projects.id),
-  name: text("name"),
+  id_task: serial("id").primaryKey(),
+  id_project: integer("project_id").references(() => projects.id),
+  task_name: text("name"),
   description: text("description"),
-  deadlineAt: timestamp("deadlineAt"),
-  parentTaskId: integer("parent_task_id").references(() => tasks.id),
+  deadline: timestamp("deadlineAt"),
+  id_parent_task: integer("parent_task_id").references(() => tasks.id),
 });
 
 const tasksRelations = relations("tasks", ({ one, many }) => ({
   project: one(projects, {
-    fields: [tasks.projectId],
-    references: [projects.id],
+    fields: [tasks.id_project],
+    references: [projects.id_task],
   }),
   tasksToUsers: many(tasksToUsers),
   tasksToTeams: many(tasksToTeams),
   parentTask: one(tasks, {
-    fields: [tasks.parentTaskId],
-    references: [tasks.id],
+    fields: [tasks.id_parent_task],
+    references: [tasks.id_task],
   }),
   childTasks: many(tasks),
 }));
@@ -121,10 +121,10 @@ const tasksToUsers = pgTable(
   {
     taskId: integer("task_id")
       .notNull()
-      .references(() => tasks.id),
+      .references(() => tasks.id_task),
     userId: integer("user_id")
       .notNull()
-      .references(() => users.id),
+      .references(() => users.id_user),
   },
   (t) => ({
     pk: primaryKey(t.taskId, t.userId),
@@ -136,10 +136,10 @@ const tasksToTeams = pgTable(
   {
     taskId: integer("task_id")
       .notNull()
-      .references(() => tasks.id),
+      .references(() => tasks.id_task),
     teamId: integer("team_id")
       .notNull()
-      .references(() => teams.id),
+      .references(() => teams.id_team),
   },
   (t) => ({
     pk: primaryKey(t.taskId, t.teamId),

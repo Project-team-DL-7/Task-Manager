@@ -1,6 +1,6 @@
-const express = require('express');
-const TeamService = require('../../application/TeamService');
-const Team = require('../../domain/Team');
+const express = require("express");
+const TeamService = require("../../application/TeamService");
+const Team = require("../../domain/Team");
 
 const router = express.Router();
 
@@ -21,12 +21,16 @@ const router = express.Router();
  *      '404':
  *        description: Team not found
  */
-router.get('/:id_team', (req, res) => {
-  const team = TeamService.getTeamById(req.params.id_team);
-  if (team) {
-    res.status(200).json(team);
-  } else {
-    res.status(404).json({ message: "Team not found" });
+router.get("/:id_team", async (req, res, next) => {
+  try {
+    const team = await TeamService.getTeamById(req.params.id_team);
+    if (team) {
+      res.status(200).json(team);
+    } else {
+      res.status(404).json({ message: "Team not found" });
+    }
+  } catch (err) {
+    next(err);
   }
 });
 
@@ -52,9 +56,13 @@ router.get('/:id_team', (req, res) => {
  *      '201':
  *        description: Team created
  */
-router.post('/', (req, res) => {
-  const createdTeam = TeamService.createTeam(req.body);
-  res.status(201).json(createdTeam);
+router.post("/", async (req, res, next) => {
+  try {
+    const createdTeam = await TeamService.createTeam(req.body);
+    res.status(201).json(createdTeam);
+  } catch (err) {
+    next(err);
+  }
 });
 
 /**
@@ -74,12 +82,16 @@ router.post('/', (req, res) => {
  *      '404':
  *        description: Team not found
  */
-router.delete('/:id_team', (req, res) => {
-  const result = TeamService.deleteTeamById(req.params.id_team);
-  if (result) {
-    res.status(200).json({ message: "Team deleted" });
-  } else {
-    res.status(404).json({ message: "Team not found" });
+router.delete("/:id_team", async (req, res, next) => {
+  try {
+    const result = await TeamService.deleteTeamById(req.params.id_team);
+    if (result) {
+      res.status(200).json({ message: "Team deleted" });
+    } else {
+      res.status(404).json({ message: "Team not found" });
+    }
+  } catch (err) {
+    next(err);
   }
 });
 
@@ -106,15 +118,24 @@ router.delete('/:id_team', (req, res) => {
  *    responses:
  *      '200':
  *        description: Team updated
+ *      '400':
+ *        description: Conflicting name with other team
  *      '404':
  *        description: Team not found
  */
-router.put('/', (req, res) => {
-  const updatedTeam = TeamService.updateTeam(req.body);
-  if (updatedTeam) {
-    res.status(200).json(updatedTeam);
-  } else {
-    res.status(404).json({ message: "Team not found" });
+router.put("/", async (req, res, next) => {
+  try {
+    const updatedTeam = await TeamService.updateTeam(req.body);
+    if (updatedTeam) {
+      if (updatedTeam.team_name === req.body.team_name)
+        res.status(200).json(updatedTeam);
+      else
+        res.status(400).json({ message: "Conflicting name with other team" });
+    } else {
+      res.status(404).json({ message: "Team not found" });
+    }
+  } catch (err) {
+    next(err);
   }
 });
 

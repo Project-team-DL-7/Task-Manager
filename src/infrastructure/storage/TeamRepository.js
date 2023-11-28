@@ -1,45 +1,39 @@
-const Team = require('../../domain/Team');
+const { eq } = require("drizzle-orm");
+const db = require("../../..");
+const Team = require("../../domain/Team");
+const { teams } = require("./schema");
 
 class TeamRepository {
-  constructor() {
-    // Dummy in-memory storage
-    this.teams = [
-      new Team(1, 'Team Alpha', 'Description for Team Alpha'),
-      new Team(2, 'Team Beta', 'Description for Team Beta'),
-      // Add more teams as necessary
-    ];
-  }
-
   // Find a team by ID
-  findTeamById(id_team) {
-    return this.teams.find(team => team.id_team == id_team) || null;
-  }
-
-  // Add a new team
-  addTeam(team) {
-    team.id_team = (this.teams[this.teams.length - 1]).id_team + 1;
-    this.teams.push(team);
+  async findTeamById(id_team) {
+    const team = await db.query.teams.findFirst({
+      where: eq(teams.id_team, id_team),
+    });
     return team;
   }
 
+  // Add a new team
+  async addTeam(team) {
+    return await db.insert(teams).values(team).returning();
+  }
+
   // Delete a team by ID
-  deleteTeamById(id_team) {
-    const teamIndex = this.teams.findIndex(team => team.id_team == id_team);
-    if (teamIndex != -1) {
-      const [deletedTeam] = this.teams.splice(teamIndex, 1);
-      return deletedTeam;
-    }
-    return null;
+  async deleteTeamById(id_team) {
+    const res = await db
+      .delete(teams)
+      .where(eq(teams.id_team, id_team))
+      .returning();
+    return res.length ? res[0] : null;
   }
 
   // Update team details
-  updateTeam(teamToUpdate) {
-    const teamIndex = this.teams.findIndex(team => team.id_team == teamToUpdate.id_team);
-    if (teamIndex != -1) {
-      this.teams[teamIndex] = teamToUpdate;
-      return teamToUpdate;
-    }
-    return null;
+  async updateTeam(teamToUpdate) {
+    const updatedTeam = await db
+      .update(teams)
+      .set({ description: teamToUpdate.description })
+      .where(eq(teams.id_team, teamToUpdate.id_team))
+      .returning();
+    return updatedTeam[0] ?? null;
   }
 }
 

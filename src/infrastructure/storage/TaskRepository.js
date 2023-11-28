@@ -1,47 +1,43 @@
-const Task = require('../../domain/Task');
+const { eq } = require("drizzle-orm");
+const db = require("../../..");
+const { tasks } = require("./schema");
 
 class TaskRepository {
-  constructor() {
-    // Dummy in-memory storage
-    this.tasks = [
-      new Task(1, 1, 'Task One', 'Description for Task One', 1672444800),  // Unix time example
-      new Task(2, 1, 'Task Two', 'Description for Task Two', 1675046400),  // Unix time example
-      // Add more tasks as necessary
-    ];
-  }
-
   // Find a task by ID
-  findTaskById(id_task) {
-    return this.tasks.find(task => task.id_task == id_task) || null;
-  }
-
-  // Add a new task
-  addTask(task) {
-    task.id_task = (this.tasks[this.tasks.length - 1]).id_task + 1;
-    this.tasks.push(task);
+  async findTaskById(id_task) {
+    const task = await db.query.tasks.findFirst({
+      where: eq(tasks.id_task, id_task),
+    });
     return task;
   }
 
+  // Add a new task
+  async addTask(task) {
+    const createdTask = await db
+      .insert(tasks)
+      .values({ ...task, deadline: new Date(task.deadline) })
+      .returning();
+    return createdTask;
+  }
+
   // Delete a task by ID
-  deleteTaskById(id_task) {
-    const taskIndex = this.tasks.findIndex(task => task.id_task == id_task);
-    if (taskIndex != -1) {
-      const [deletedTask] = this.tasks.splice(taskIndex, 1);
-      return deletedTask;
-    }
-    return null;
+  async deleteTaskById(id_task) {
+    const res = await db
+      .delete(tasks)
+      .where(eq(tasks.id_task, id_task))
+      .returning();
+    return res.length ? res[0] : null;
   }
 
   // Update task details
-  updateTask(taskToUpdate) {
-    const taskIndex = this.tasks.findIndex(task => task.id_task == taskToUpdate.id_task);
-    if (taskIndex != -1) {
-      this.tasks[taskIndex] = taskToUpdate;
-      return taskToUpdate;
-    }
-    return null;
+  async updateTask(taskToUpdate) {
+    const updatedTask = await db
+      .update(tasks)
+      .set({ ...taskToUpdate, deadline: new Date(taskToUpdate.deadline) })
+      .where(eq(tasks.id_task, taskToUpdate.id_task))
+      .returning();
+    return updatedTask[0] ?? null;
   }
 }
 
 module.exports = new TaskRepository();
-  

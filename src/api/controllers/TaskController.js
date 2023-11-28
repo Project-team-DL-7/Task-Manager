@@ -1,6 +1,6 @@
-const express = require('express');
-const TaskService = require('../../application/TaskService');
-const Task = require('../../domain/Task');
+const express = require("express");
+const TaskService = require("../../application/TaskService");
+const Task = require("../../domain/Task");
 
 const router = express.Router();
 
@@ -21,12 +21,16 @@ const router = express.Router();
  *      '404':
  *        description: Task not found
  */
-router.get('/:id_task', (req, res) => {
-  const task = TaskService.getTaskById(req.params.id_task);
-  if (task) {
-    res.status(200).json(task);
-  } else {
-    res.status(404).json({ message: "Task not found" });
+router.get("/:id_task", async (req, res, next) => {
+  try {
+    const task = await TaskService.getTaskById(req.params.id_task);
+    if (task) {
+      res.status(200).json(task);
+    } else {
+      res.status(404).json({ message: "Task not found" });
+    }
+  } catch (err) {
+    next(err);
   }
 });
 
@@ -56,9 +60,13 @@ router.get('/:id_task', (req, res) => {
  *      '201':
  *        description: Task created
  */
-router.post('/', (req, res) => {
-  const createdTask = TaskService.createTask(req.body);
-  res.status(201).json(createdTask);
+router.post("/", async (req, res, next) => {
+  try {
+    const createdTask = await TaskService.createTask(req.body);
+    res.status(201).json(createdTask);
+  } catch (err) {
+    next(err);
+  }
 });
 
 /**
@@ -78,12 +86,16 @@ router.post('/', (req, res) => {
  *      '404':
  *        description: Task not found
  */
-router.delete('/:id_task', (req, res) => {
-  const result = TaskService.deleteTaskById(req.params.id_task);
-  if (result) {
-    res.status(200).json({ message: "Task deleted" });
-  } else {
-    res.status(404).json({ message: "Task not found" });
+router.delete("/:id_task", async (req, res, next) => {
+  try {
+    const result = await TaskService.deleteTaskById(req.params.id_task);
+    if (result) {
+      res.status(200).json({ message: "Task deleted" });
+    } else {
+      res.status(404).json({ message: "Task not found" });
+    }
+  } catch (err) {
+    next(err);
   }
 });
 
@@ -117,12 +129,16 @@ router.delete('/:id_task', (req, res) => {
  *      '404':
  *        description: Task not found
  */
-router.put('/', (req, res) => {
-  const updatedTask = TaskService.updateTask(req.body);
-  if (updatedTask) {
-    res.status(200).json(updatedTask);
-  } else {
-    res.status(404).json({ message: "Task not found" });
+router.put("/", async (req, res, next) => {
+  try {
+    const updatedTask = await TaskService.updateTask(req.body);
+    if (updatedTask) {
+      res.status(200).json(updatedTask);
+    } else {
+      res.status(404).json({ message: "Task not found" });
+    }
+  } catch (err) {
+    next(err);
   }
 });
 
