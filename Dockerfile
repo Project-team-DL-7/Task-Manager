@@ -13,6 +13,8 @@ RUN npm install -g nodemon
 RUN npm install swagger-jsdoc swagger-ui-express --save
 
 # Expose port 5000 for the application
+# This is actually getting overriden by docker-compose.yml
+# Maybe will be used in production build
 EXPOSE 5000
 
 # Start the application using nodemon

@@ -12,6 +12,11 @@ Docker (https://www.docker.com/products/docker-desktop/) installed on your machi
 - Starting the Application: By default, the application is started using the npm start command when the container is run.
 
 ## Building the Docker Container
+
+Manually copy .env.example to .env or if on linux/mac:
+```bash
+$ cp .env.example .env
+```
 ### Running the Docker Container
 #### Powershell:
     docker-compose up --build
