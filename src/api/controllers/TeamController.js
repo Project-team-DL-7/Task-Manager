@@ -1,6 +1,8 @@
-const express = require('express');
-const TeamService = require('../../application/TeamService');
-const Team = require('../../domain/Team');
+const express = require("express");
+const TeamService = require("../../application/TeamService");
+const Team = require("../../domain/Team");
+const { validateRequest } = require("zod-express-middleware");
+const { z } = require("zod");
 
 const router = express.Router();
 
@@ -21,14 +23,18 @@ const router = express.Router();
  *      '404':
  *        description: Team not found
  */
-router.get('/:id_team', (req, res) => {
-  const team = TeamService.getTeamById(req.params.id_team);
-  if (team) {
-    res.status(200).json(team);
-  } else {
-    res.status(404).json({ message: "Team not found" });
+router.get(
+  "/:id_team",
+  validateRequest({ params: z.object({ id_team: z.coerce.number() }) }),
+  (req, res) => {
+    const team = TeamService.getTeamById(req.params.id_team);
+    if (team) {
+      res.status(200).json(team);
+    } else {
+      res.status(404).json({ message: "Team not found" });
+    }
   }
-});
+);
 
 /**
  * @swagger
@@ -52,10 +58,19 @@ router.get('/:id_team', (req, res) => {
  *      '201':
  *        description: Team created
  */
-router.post('/', (req, res) => {
-  const createdTeam = TeamService.createTeam(req.body);
-  res.status(201).json(createdTeam);
-});
+router.post(
+  "/",
+  validateRequest({
+    body: z.object({
+      team_name: z.string(),
+      description: z.string(),
+    }),
+  }),
+  (req, res) => {
+    const createdTeam = TeamService.createTeam(req.body);
+    res.status(201).json(createdTeam);
+  }
+);
 
 /**
  * @swagger
@@ -74,14 +89,18 @@ router.post('/', (req, res) => {
  *      '404':
  *        description: Team not found
  */
-router.delete('/:id_team', (req, res) => {
-  const result = TeamService.deleteTeamById(req.params.id_team);
-  if (result) {
-    res.status(200).json({ message: "Team deleted" });
-  } else {
-    res.status(404).json({ message: "Team not found" });
+router.delete(
+  "/:id_team",
+  validateRequest({ params: z.object({ id_team: z.coerce.number() }) }),
+  (req, res) => {
+    const result = TeamService.deleteTeamById(req.params.id_team);
+    if (result) {
+      res.status(200).json({ message: "Team deleted" });
+    } else {
+      res.status(404).json({ message: "Team not found" });
+    }
   }
-});
+);
 
 /**
  * @swagger
@@ -109,13 +128,23 @@ router.delete('/:id_team', (req, res) => {
  *      '404':
  *        description: Team not found
  */
-router.put('/', (req, res) => {
-  const updatedTeam = TeamService.updateTeam(req.body);
-  if (updatedTeam) {
-    res.status(200).json(updatedTeam);
-  } else {
-    res.status(404).json({ message: "Team not found" });
+router.put(
+  "/",
+  validateRequest({
+    body: z.object({
+      id_team: z.number(),
+      team_name: z.string(),
+      description: z.string(),
+    }),
+  }),
+  (req, res) => {
+    const updatedTeam = TeamService.updateTeam(req.body);
+    if (updatedTeam) {
+      res.status(200).json(updatedTeam);
+    } else {
+      res.status(404).json({ message: "Team not found" });
+    }
   }
-});
+);
 
 module.exports = router;

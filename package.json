@@ -26,7 +26,9 @@
     "pg": "^8.11.3",
     "postgres": "^3.4.3",
     "swagger-jsdoc": "^6.2.8",
-    "swagger-ui-express": "^5.0.0"
+    "swagger-ui-express": "^5.0.0",
+    "zod": "^3.22.4",
+    "zod-express-middleware": "^1.4.0"
   },
   "devDependencies": {
     "chai-http": "^4.4.0",

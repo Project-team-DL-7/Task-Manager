@@ -1,6 +1,8 @@
-const express = require('express');
-const UserService = require('../../application/UserService');
-const User = require('../../domain/User');
+const express = require("express");
+const UserService = require("../../application/UserService");
+const User = require("../../domain/User");
+const { validateRequest } = require("zod-express-middleware");
+const { z } = require("zod");
 
 const router = express.Router();
 
@@ -21,14 +23,18 @@ const router = express.Router();
  *      '404':
  *        description: User not found
  */
-router.get('/:id_user', (req, res) => {
-  const user = UserService.getUserById(req.params.id_user);
-  if (user) {
-    res.status(200).json(user);
-  } else {
-    res.status(404).json({ message: "User not found" });
+router.get(
+  "/:id_user",
+  validateRequest({ params: z.object({ id_user: z.coerce.number() }) }),
+  (req, res) => {
+    const user = UserService.getUserById(req.params.id_user);
+    if (user) {
+      res.status(200).json(user);
+    } else {
+      res.status(404).json({ message: "User not found" });
+    }
   }
-});
+);
 
 /**
  * @swagger
@@ -56,10 +62,21 @@ router.get('/:id_user', (req, res) => {
  *      '201':
  *        description: User created
  */
-router.post('/', (req, res) => {
-  const createdUser = UserService.createUser(req.body);
-  res.status(201).json(createdUser);
-});
+router.post(
+  "/",
+  validateRequest({
+    body: z.object({
+      email: z.string(),
+      username: z.string(),
+      password: z.string(),
+      registrationDate: z.number(),
+    }),
+  }),
+  (req, res) => {
+    const createdUser = UserService.createUser(req.body);
+    res.status(201).json(createdUser);
+  }
+);
 
 /**
  * @swagger
@@ -78,14 +95,18 @@ router.post('/', (req, res) => {
  *      '404':
  *        description: User not found
  */
-router.delete('/:id_user', (req, res) => {
-  const result = UserService.deleteUserById(req.params.id_user);
-  if (result) {
-    res.status(200).json({ message: "User deleted" });
-  } else {
-    res.status(404).json({ message: "User not found" });
+router.delete(
+  "/:id_user",
+  validateRequest({ params: z.object({ id_user: z.coerce.number() }) }),
+  (req, res) => {
+    const result = UserService.deleteUserById(req.params.id_user);
+    if (result) {
+      res.status(200).json({ message: "User deleted" });
+    } else {
+      res.status(404).json({ message: "User not found" });
+    }
   }
-});
+);
 
 /**
  * @swagger
@@ -117,13 +138,25 @@ router.delete('/:id_user', (req, res) => {
  *      '404':
  *        description: User not found
  */
-router.put('/', (req, res) => {
-  const updatedUser = UserService.updateUser(req.body);
-  if (updatedUser) {
-    res.status(200).json(updatedUser);
-  } else {
-    res.status(404).json({ message: "User not found" });
+router.put(
+  "/",
+  validateRequest({
+    body: z.object({
+      id_user: z.number(),
+      email: z.string(),
+      username: z.string(),
+      password: z.string(),
+      registrationDate: z.number(),
+    }),
+  }),
+  (req, res) => {
+    const updatedUser = UserService.updateUser(req.body);
+    if (updatedUser) {
+      res.status(200).json(updatedUser);
+    } else {
+      res.status(404).json({ message: "User not found" });
+    }
   }
-});
+);
 
 module.exports = router;
