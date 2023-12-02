@@ -1,6 +1,8 @@
-const express = require('express');
-const TaskService = require('../../application/TaskService');
-const Task = require('../../domain/Task');
+const express = require("express");
+const TaskService = require("../../application/TaskService");
+const Task = require("../../domain/Task");
+const { validateRequest } = require("zod-express-middleware");
+const { z } = require("zod");
 
 const router = express.Router();
 
@@ -21,14 +23,18 @@ const router = express.Router();
  *      '404':
  *        description: Task not found
  */
-router.get('/:id_task', (req, res) => {
-  const task = TaskService.getTaskById(req.params.id_task);
-  if (task) {
-    res.status(200).json(task);
-  } else {
-    res.status(404).json({ message: "Task not found" });
+router.get(
+  "/:id_task",
+  validateRequest({ params: z.object({ id_task: z.coerce.number() }) }),
+  (req, res) => {
+    const task = TaskService.getTaskById(req.params.id_task);
+    if (task) {
+      res.status(200).json(task);
+    } else {
+      res.status(404).json({ message: "Task not found" });
+    }
   }
-});
+);
 
 /**
  * @swagger
@@ -56,10 +62,21 @@ router.get('/:id_task', (req, res) => {
  *      '201':
  *        description: Task created
  */
-router.post('/', (req, res) => {
-  const createdTask = TaskService.createTask(req.body);
-  res.status(201).json(createdTask);
-});
+router.post(
+  "/",
+  validateRequest({
+    body: z.object({
+      id_project: z.number(),
+      task_name: z.string(),
+      description: z.string(),
+      deadline: z.number(),
+    }),
+  }),
+  (req, res) => {
+    const createdTask = TaskService.createTask(req.body);
+    res.status(201).json(createdTask);
+  }
+);
 
 /**
  * @swagger
@@ -78,14 +95,18 @@ router.post('/', (req, res) => {
  *      '404':
  *        description: Task not found
  */
-router.delete('/:id_task', (req, res) => {
-  const result = TaskService.deleteTaskById(req.params.id_task);
-  if (result) {
-    res.status(200).json({ message: "Task deleted" });
-  } else {
-    res.status(404).json({ message: "Task not found" });
+router.delete(
+  "/:id_task",
+  validateRequest({ params: z.object({ id_task: z.coerce.number() }) }),
+  (req, res) => {
+    const result = TaskService.deleteTaskById(req.params.id_task);
+    if (result) {
+      res.status(200).json({ message: "Task deleted" });
+    } else {
+      res.status(404).json({ message: "Task not found" });
+    }
   }
-});
+);
 
 /**
  * @swagger
@@ -117,13 +138,29 @@ router.delete('/:id_task', (req, res) => {
  *      '404':
  *        description: Task not found
  */
-router.put('/', (req, res) => {
-  const updatedTask = TaskService.updateTask(req.body);
-  if (updatedTask) {
-    res.status(200).json(updatedTask);
-  } else {
-    res.status(404).json({ message: "Task not found" });
+router.put(
+  "/:id_task",
+  validateRequest({
+    params: z.object({ id_task: z.number() }),
+    body: z.object({
+      id_project: z.number(),
+      task_name: z.string(),
+      description: z.string(),
+      deadline: z.number(),
+    }),
+  }),
+  (req, res) => {
+    const taskId = req.params.id_task;
+    const taskData = req.body;
+
+    const updatedTask = TaskService.updateTask(taskId, taskData);
+    if (updatedTask) {
+      res.status(200).json(updatedTask);
+    } else {
+      res.status(404).json({ message: "Task not found" });
+    }
   }
-});
+);
+
 
 module.exports = router;

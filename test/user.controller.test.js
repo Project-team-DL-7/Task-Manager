@@ -107,10 +107,11 @@ describe('User Controller Error Scenarios', () => {
 
     // PUT request with invalid data
     it('should return 400 for invalid user data on PUT', done => {
-        const userId = 1; // Existing user ID for testing
-        const invalidUserData = {}; // Invalid or incomplete data
+        const invalidUserData = {
+            // Missing or invalid fields here
+        };
         chai.request(server)
-            .put(`/user/${userId}`)
+            .put('/user')
             .send(invalidUserData)
             .end((err, res) => {
                 expect(res).to.have.status(400);

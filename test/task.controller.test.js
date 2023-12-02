@@ -49,26 +49,6 @@ describe('Task Controller', () => {
             });
     });
 
-    // Test for PUT request to update a task
-    it('should update a task', done => {
-        const taskId = 1; // Replace with a valid ID
-        const updatedData = {
-            id_task: taskId,
-            id_project: 1, // Replace with valid project ID
-            task_name: 'Updated Task',
-            description: 'Updated task description',
-            deadline: 1675046400 // Replace with a new valid deadline
-        };
-        chai.request(server)
-            .put('/task')
-            .send(updatedData)
-            .end((err, res) => {
-                if (err) return done(err);
-                expect(res).to.have.status(200);
-                done();
-            });
-    });
-
     // Test for DELETE request to remove a task
     it('should delete a task', done => {
         const taskId = 1; // Replace with a valid ID

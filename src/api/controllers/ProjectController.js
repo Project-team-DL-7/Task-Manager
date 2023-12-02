@@ -1,6 +1,8 @@
-const express = require('express');
-const ProjectService = require('../../application/ProjectService');
-const Project = require('../../domain/Project');
+const express = require("express");
+const ProjectService = require("../../application/ProjectService");
+const Project = require("../../domain/Project");
+const { validateRequest } = require("zod-express-middleware");
+const { z } = require("zod");
 
 const router = express.Router();
 
@@ -21,14 +23,18 @@ const router = express.Router();
  *      '404':
  *        description: Project not found
  */
-router.get('/:id_project', (req, res) => {
-  const project = ProjectService.getProjectById(req.params.id_project);
-  if (project) {
-    res.status(200).json(project);
-  } else {
-    res.status(404).json({ message: "Project not found" });
+router.get(
+  "/:id_project",
+  validateRequest({ params: z.object({ id_project: z.coerce.number() }) }),
+  (req, res) => {
+    const project = ProjectService.getProjectById(req.params.id_project);
+    if (project) {
+      res.status(200).json(project);
+    } else {
+      res.status(404).json({ message: "Project not found" });
+    }
   }
-});
+);
 
 /**
  * @swagger
@@ -50,10 +56,18 @@ router.get('/:id_project', (req, res) => {
  *      '201':
  *        description: Project created
  */
-router.post('/', (req, res) => {
-  const createdProject = ProjectService.createProject(req.body);
-  res.status(201).json(createdProject);
-});
+router.post(
+  "/",
+  validateRequest({
+    body: z.object({
+      description: z.string(),
+    }),
+  }),
+  (req, res) => {
+    const createdProject = ProjectService.createProject(req.body);
+    res.status(201).json(createdProject);
+  }
+);
 
 /**
  * @swagger
@@ -72,14 +86,18 @@ router.post('/', (req, res) => {
  *      '404':
  *        description: Project not found
  */
-router.delete('/:id_project', (req, res) => {
-  const result = ProjectService.deleteProjectById(req.params.id_project);
-  if (result) {
-    res.status(200).json({ message: "Project deleted" });
-  } else {
-    res.status(404).json({ message: "Project not found" });
+router.delete(
+  "/:id_project",
+  validateRequest({ params: z.object({ id_project: z.coerce.number() }) }),
+  (req, res) => {
+    const result = ProjectService.deleteProjectById(req.params.id_project);
+    if (result) {
+      res.status(200).json({ message: "Project deleted" });
+    } else {
+      res.status(404).json({ message: "Project not found" });
+    }
   }
-});
+);
 
 /**
  * @swagger
@@ -105,13 +123,26 @@ router.delete('/:id_project', (req, res) => {
  *      '404':
  *        description: Project not found
  */
-router.put('/', (req, res) => {
-  const updatedProject = ProjectService.updateProject(req.body);
-  if (updatedProject) {
-    res.status(200).json(updatedProject);
-  } else {
-    res.status(404).json({ message: "Project not found" });
+router.put(
+  "/:id_project",
+  validateRequest({
+    params: z.object({ id_project: z.coerce.number() }),
+    body: z.object({
+      description: z.string(),
+    }),
+  }),
+  (req, res) => {
+    const projectId = req.params.id_project;
+    const projectData = req.body;
+
+    const updatedProject = ProjectService.updateProject(projectId, projectData);
+    if (updatedProject) {
+      res.status(200).json(updatedProject);
+    } else {
+      res.status(404).json({ message: "Project not found" });
+    }
   }
-});
+);
+
 
 module.exports = router;

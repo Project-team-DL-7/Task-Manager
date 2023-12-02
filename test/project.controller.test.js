@@ -18,7 +18,7 @@ before(done => {
 describe('Project Controller', () => {
     // Test for GET request to retrieve a single project by ID
     it('should return a project by ID', done => {
-        const projectId = 1; // Replace with a valid ID
+        const projectId = 1;
         chai.request(server)
             .get(`/project/${projectId}`)
             .end((err, res) => {
@@ -33,7 +33,7 @@ describe('Project Controller', () => {
     // Test for POST request to create a new project
     it('should create a new project', done => {
         const newProject = {
-            // ... define the project data as expected by your API
+            description: 'Sample Project Description' // Add a valid description
         };
         chai.request(server)
             .post('/project')
@@ -44,11 +44,11 @@ describe('Project Controller', () => {
                 expect(res.body).to.be.an('object');
                 done();
             });
-    });
+    });    
 
     // Test for DELETE request to remove a project
     it('should delete a project', done => {
-        const projectId = 1; // Replace with a valid ID
+        const projectId = 1;
         chai.request(server)
             .delete(`/project/${projectId}`)
             .end((err, res) => {
@@ -62,7 +62,7 @@ describe('Project Controller', () => {
 // Error scenario tests for Project Controller
 describe('Project Controller Error Scenarios', () => {
     it('should return 404 for a non-existent project', done => {
-        const projectId = 999; // Non-existent project ID
+        const projectId = 999;
         chai.request(server)
             .get(`/project/${projectId}`)
             .end((err, res) => {
