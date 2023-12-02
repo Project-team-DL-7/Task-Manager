@@ -58,3 +58,4 @@ app.listen(PORT, () => {
     `Server documentation running on http://localhost:${PORT}/api-docs/`
   );
 });
+module.exports = app;
