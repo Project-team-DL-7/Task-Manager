@@ -21,6 +21,8 @@ const db = drizzle(queryClient, {
   schema: schema,
 });
 
+module.exports.db = db
+
 // Swagger setup
 const swaggerOptions = {
   swaggerDefinition: {
@@ -67,4 +69,4 @@ app.listen(PORT, () => {
   );
 });
 
-module.exports = db;
+module.exports.app = app

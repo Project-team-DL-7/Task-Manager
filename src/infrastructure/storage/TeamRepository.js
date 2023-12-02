@@ -1,5 +1,5 @@
 const { eq } = require("drizzle-orm");
-const db = require("../../..");
+const { db } = require("../../..");
 const Team = require("../../domain/Team");
 const { teams } = require("./schema");
 
@@ -14,7 +14,8 @@ class TeamRepository {
 
   // Add a new team
   async addTeam(team) {
-    return await db.insert(teams).values(team).returning();
+    const res = await db.insert(teams).values(team).returning();
+    return res[0];
   }
 
   // Delete a team by ID

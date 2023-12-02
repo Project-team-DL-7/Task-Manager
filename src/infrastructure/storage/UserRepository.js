@@ -1,7 +1,7 @@
 const { eq } = require("drizzle-orm");
 const User = require("../../domain/User");
 const { users } = require("./schema");
-const db = require("../../..");
+const { db } = require("../../..");
 
 class UserRepository {
   // Find a user by ID
@@ -14,13 +14,14 @@ class UserRepository {
 
   // Add a new user
   async addUser(user) {
-    return await db
+    const res = await db
       .insert(users)
       .values({
         ...user,
         registrationDate: new Date(user.registrationDate),
       })
       .returning();
+    return res[0];
   }
 
   // Delete a user by ID

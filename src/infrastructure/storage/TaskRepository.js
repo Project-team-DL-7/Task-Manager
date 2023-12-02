@@ -1,5 +1,5 @@
 const { eq } = require("drizzle-orm");
-const db = require("../../..");
+const { db } = require("../../..");
 const { tasks } = require("./schema");
 
 class TaskRepository {
@@ -17,7 +17,7 @@ class TaskRepository {
       .insert(tasks)
       .values({ ...task, deadline: new Date(task.deadline) })
       .returning();
-    return createdTask;
+    return createdTask[0];
   }
 
   // Delete a task by ID

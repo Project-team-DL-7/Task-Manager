@@ -1,5 +1,5 @@
 const { eq } = require("drizzle-orm");
-const db = require("../../..");
+const { db } = require("../../..");
 const { projects } = require("./schema");
 
 class ProjectRepository {
@@ -13,7 +13,8 @@ class ProjectRepository {
 
   // Add a new project
   async addProject(project) {
-    return await db.insert(projects).values(project).returning();
+    const res = await db.insert(projects).values(project).returning();
+    return res[0];
   }
 
   // Delete a project by ID
