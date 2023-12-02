@@ -142,8 +142,8 @@ router.delete(
 router.put(
   "/",
   validateRequest({
-    params: z.object({ id_project: z.coerce.number() }),
     body: z.object({
+      id_project: z.coerce.number(),
       description: z.string(),
     }),
   }),
