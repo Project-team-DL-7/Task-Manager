@@ -5,7 +5,7 @@ const { expect } = chai;
 chai.use(chaiHttp);
 
 // Import the app
-const app = require('../index');
+const { app } = require('../index');
 
 // Start the server for testing purposes
 let server;

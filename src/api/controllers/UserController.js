@@ -26,15 +26,23 @@ const router = express.Router();
 router.get(
   "/:id_user",
   validateRequest({ params: z.object({ id_user: z.coerce.number() }) }),
-  (req, res) => {
-    const user = UserService.getUserById(req.params.id_user);
-    if (user) {
-      res.status(200).json(user);
-    } else {
-      res.status(404).json({ message: "User not found" });
+  async (req, res, next) => {
+    try {
+      const user = await UserService.getUserById(req.params.id_user);
+      if (user) {
+        res.status(200).json(user);
+      } else {
+        res.status(404).json({ message: "User not found" });
+      }
+    } catch (err) {
+      next(err);
     }
   }
 );
+
+// These endpoints probably won't be used
+// For user creation there will be auth/signup endpoint
+// PUT / DELETE are nice to have
 
 /**
  * @swagger
@@ -72,9 +80,13 @@ router.post(
       registrationDate: z.number(),
     }),
   }),
-  (req, res) => {
-    const createdUser = UserService.createUser(req.body);
-    res.status(201).json(createdUser);
+  async (req, res, next) => {
+    try {
+      const createdUser = await UserService.createUser(req.body);
+      res.status(201).json(createdUser);
+    } catch (err) {
+      next(err);
+    }
   }
 );
 
@@ -98,16 +110,19 @@ router.post(
 router.delete(
   "/:id_user",
   validateRequest({ params: z.object({ id_user: z.coerce.number() }) }),
-  (req, res) => {
-    const result = UserService.deleteUserById(req.params.id_user);
-    if (result) {
-      res.status(200).json({ message: "User deleted" });
-    } else {
-      res.status(404).json({ message: "User not found" });
+  async (req, res, next) => {
+    try {
+      const result = await UserService.deleteUserById(req.params.id_user);
+      if (result) {
+        res.status(200).json({ message: "User deleted" });
+      } else {
+        res.status(404).json({ message: "User not found" });
+      }
+    } catch (err) {
+      next(err);
     }
   }
 );
-
 /**
  * @swagger
  * /user:
@@ -149,12 +164,16 @@ router.put(
       registrationDate: z.number(),
     }),
   }),
-  (req, res) => {
-    const updatedUser = UserService.updateUser(req.body);
-    if (updatedUser) {
-      res.status(200).json(updatedUser);
-    } else {
-      res.status(404).json({ message: "User not found" });
+  async (req, res, next) => {
+    try {
+      const updatedUser = await UserService.updateUser(req.body);
+      if (updatedUser) {
+        res.status(200).json(updatedUser);
+      } else {
+        res.status(404).json({ message: "User not found" });
+      }
+    } catch (err) {
+      next(err);
     }
   }
 );

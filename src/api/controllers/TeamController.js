@@ -26,12 +26,16 @@ const router = express.Router();
 router.get(
   "/:id_team",
   validateRequest({ params: z.object({ id_team: z.coerce.number() }) }),
-  (req, res) => {
-    const team = TeamService.getTeamById(req.params.id_team);
-    if (team) {
-      res.status(200).json(team);
-    } else {
-      res.status(404).json({ message: "Team not found" });
+  async (req, res, next) => {
+    try {
+      const team = await TeamService.getTeamById(req.params.id_team);
+      if (team) {
+        res.status(200).json(team);
+      } else {
+        res.status(404).json({ message: "Team not found" });
+      }
+    } catch (err) {
+      next(err);
     }
   }
 );
@@ -66,9 +70,14 @@ router.post(
       description: z.string(),
     }),
   }),
-  (req, res) => {
-    const createdTeam = TeamService.createTeam(req.body);
-    res.status(201).json(createdTeam);
+
+  async (req, res, next) => {
+    try {
+      const createdTeam = await TeamService.createTeam(req.body);
+      res.status(201).json(createdTeam);
+    } catch (err) {
+      next(err);
+    }
   }
 );
 
@@ -92,12 +101,16 @@ router.post(
 router.delete(
   "/:id_team",
   validateRequest({ params: z.object({ id_team: z.coerce.number() }) }),
-  (req, res) => {
-    const result = TeamService.deleteTeamById(req.params.id_team);
-    if (result) {
-      res.status(200).json({ message: "Team deleted" });
-    } else {
-      res.status(404).json({ message: "Team not found" });
+ async (req, res, next) => {
+    try {
+      const result = await TeamService.deleteTeamById(req.params.id_team);
+      if (result) {
+        res.status(200).json({ message: "Team deleted" });
+      } else {
+        res.status(404).json({ message: "Team not found" });
+      }
+    } catch (err) {
+      next(err);
     }
   }
 );
@@ -125,6 +138,8 @@ router.delete(
  *    responses:
  *      '200':
  *        description: Team updated
+ *      '400':
+ *        description: Conflicting name with other team
  *      '404':
  *        description: Team not found
  */
@@ -137,12 +152,19 @@ router.put(
       description: z.string(),
     }),
   }),
-  (req, res) => {
-    const updatedTeam = TeamService.updateTeam(req.body);
-    if (updatedTeam) {
-      res.status(200).json(updatedTeam);
-    } else {
-      res.status(404).json({ message: "Team not found" });
+  async (req, res, next) => {
+    try {
+      const updatedTeam = await TeamService.updateTeam(req.body);
+      if (updatedTeam) {
+        if (updatedTeam.team_name === req.body.team_name)
+          res.status(200).json(updatedTeam);
+        else
+          res.status(400).json({ message: "Conflicting name with other team" });
+      } else {
+        res.status(404).json({ message: "Team not found" });
+      }
+    } catch (err) {
+      next(err);
     }
   }
 );

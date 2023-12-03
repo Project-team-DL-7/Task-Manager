@@ -26,12 +26,18 @@ const router = express.Router();
 router.get(
   "/:id_project",
   validateRequest({ params: z.object({ id_project: z.coerce.number() }) }),
-  (req, res) => {
-    const project = ProjectService.getProjectById(req.params.id_project);
-    if (project) {
-      res.status(200).json(project);
-    } else {
-      res.status(404).json({ message: "Project not found" });
+  async (req, res, next) => {
+    try {
+      const project = await ProjectService.getProjectById(
+        req.params.id_project
+      );
+      if (project) {
+        res.status(200).json(project);
+      } else {
+        res.status(404).json({ message: "Project not found" });
+      }
+    } catch (err) {
+      next(err);
     }
   }
 );
@@ -63,9 +69,13 @@ router.post(
       description: z.string(),
     }),
   }),
-  (req, res) => {
-    const createdProject = ProjectService.createProject(req.body);
-    res.status(201).json(createdProject);
+  async (req, res, next) => {
+    try {
+      const createdProject = await ProjectService.createProject(req.body);
+      res.status(201).json(createdProject);
+    } catch (err) {
+      next(err);
+    }
   }
 );
 
@@ -89,12 +99,18 @@ router.post(
 router.delete(
   "/:id_project",
   validateRequest({ params: z.object({ id_project: z.coerce.number() }) }),
-  (req, res) => {
-    const result = ProjectService.deleteProjectById(req.params.id_project);
-    if (result) {
-      res.status(200).json({ message: "Project deleted" });
-    } else {
-      res.status(404).json({ message: "Project not found" });
+  async (req, res, next) => {
+    try {
+      const result = await ProjectService.deleteProjectById(
+        req.params.id_project
+      );
+      if (result) {
+        res.status(200).json({ message: "Project deleted" });
+      } else {
+        res.status(404).json({ message: "Project not found" });
+      }
+    } catch (err) {
+      next(err);
     }
   }
 );
@@ -124,25 +140,25 @@ router.delete(
  *        description: Project not found
  */
 router.put(
-  "/:id_project",
+  "/",
   validateRequest({
-    params: z.object({ id_project: z.coerce.number() }),
     body: z.object({
+      id_project: z.coerce.number(),
       description: z.string(),
     }),
   }),
-  (req, res) => {
-    const projectId = req.params.id_project;
-    const projectData = req.body;
-
-    const updatedProject = ProjectService.updateProject(projectId, projectData);
-    if (updatedProject) {
-      res.status(200).json(updatedProject);
-    } else {
-      res.status(404).json({ message: "Project not found" });
+  async (req, res, next) => {
+    try {
+      const updatedProject = await ProjectService.updateProject(req.body);
+      if (updatedProject) {
+        res.status(200).json(updatedProject);
+      } else {
+        res.status(404).json({ message: "Project not found" });
+      }
+    } catch (err) {
+      next(err);
     }
   }
 );
-
 
 module.exports = router;

@@ -21,6 +21,8 @@ const db = drizzle(queryClient, {
   schema: schema,
 });
 
+module.exports.db = db
+
 // Swagger setup
 const swaggerOptions = {
   swaggerDefinition: {
@@ -53,9 +55,18 @@ app.use("/team", TeamController);
 app.use("/task", TaskController);
 app.use("/project", ProjectController);
 
+// Only print errors to log
+function errorMiddleware(err, req, res, next) {
+  console.error(err);
+  res.status(500);
+  res.send("Internal Server Error");
+}
+app.use(errorMiddleware);
+
 app.listen(PORT, () => {
   console.log(
     `Server documentation running on http://localhost:${PORT}/api-docs/`
   );
 });
-module.exports = app;
+
+module.exports.app = app

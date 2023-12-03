@@ -26,12 +26,16 @@ const router = express.Router();
 router.get(
   "/:id_task",
   validateRequest({ params: z.object({ id_task: z.coerce.number() }) }),
-  (req, res) => {
-    const task = TaskService.getTaskById(req.params.id_task);
-    if (task) {
-      res.status(200).json(task);
-    } else {
-      res.status(404).json({ message: "Task not found" });
+  async (req, res, next) => {
+    try {
+      const task = await TaskService.getTaskById(req.params.id_task);
+      if (task) {
+        res.status(200).json(task);
+      } else {
+        res.status(404).json({ message: "Task not found" });
+      }
+    } catch (err) {
+      next(err);
     }
   }
 );
@@ -72,9 +76,13 @@ router.post(
       deadline: z.number(),
     }),
   }),
-  (req, res) => {
-    const createdTask = TaskService.createTask(req.body);
-    res.status(201).json(createdTask);
+  async (req, res, next) => {
+    try {
+      const createdTask = await TaskService.createTask(req.body);
+      res.status(201).json(createdTask);
+    } catch (err) {
+      next(err);
+    }
   }
 );
 
@@ -98,12 +106,16 @@ router.post(
 router.delete(
   "/:id_task",
   validateRequest({ params: z.object({ id_task: z.coerce.number() }) }),
-  (req, res) => {
-    const result = TaskService.deleteTaskById(req.params.id_task);
-    if (result) {
-      res.status(200).json({ message: "Task deleted" });
-    } else {
-      res.status(404).json({ message: "Task not found" });
+  async (req, res, next) => {
+    try {
+      const result = await TaskService.deleteTaskById(req.params.id_task);
+      if (result) {
+        res.status(200).json({ message: "Task deleted" });
+      } else {
+        res.status(404).json({ message: "Task not found" });
+      }
+    } catch (err) {
+      next(err);
     }
   }
 );
@@ -139,9 +151,8 @@ router.delete(
  *        description: Task not found
  */
 router.put(
-  "/:id_task",
+  "/",
   validateRequest({
-    params: z.object({ id_task: z.number() }),
     body: z.object({
       id_project: z.number(),
       task_name: z.string(),
@@ -149,18 +160,18 @@ router.put(
       deadline: z.number(),
     }),
   }),
-  (req, res) => {
-    const taskId = req.params.id_task;
-    const taskData = req.body;
-
-    const updatedTask = TaskService.updateTask(taskId, taskData);
-    if (updatedTask) {
-      res.status(200).json(updatedTask);
-    } else {
-      res.status(404).json({ message: "Task not found" });
+  async (req, res, next) => {
+    try {
+      const updatedTask = await TaskService.updateTask(req.body);
+      if (updatedTask) {
+        res.status(200).json(updatedTask);
+      } else {
+        res.status(404).json({ message: "Task not found" });
+      }
+    } catch (err) {
+      next(err);
     }
   }
 );
-
 
 module.exports = router;
