@@ -66,7 +66,7 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "teams_to_projects" ADD CONSTRAINT "teams_to_projects_team_id_users_id_fk" FOREIGN KEY ("team_id") REFERENCES "users"("id") ON DELETE no action ON UPDATE no action;
+ ALTER TABLE "teams_to_projects" ADD CONSTRAINT "teams_to_projects_team_id_teams_id_fk" FOREIGN KEY ("team_id") REFERENCES "teams"("id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;

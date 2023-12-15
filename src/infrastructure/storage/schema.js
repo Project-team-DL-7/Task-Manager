@@ -18,7 +18,7 @@ const teams = pgTable(
   },
   (teams) => {
     return {
-      nameIndex: uniqueIndex("name_idx").on(teams.name),
+      nameIndex: uniqueIndex("name_idx").on(teams.team_name),
     };
   }
 );
@@ -47,10 +47,10 @@ const usersToTeams = pgTable(
   {
     userId: integer("user_id")
       .notNull()
-      .references(() => users.id),
+      .references(() => users.id_user),
     teamId: integer("team_id")
       .notNull()
-      .references(() => teams.id),
+      .references(() => teams.id_team),
   },
   (t) => ({
     pk: primaryKey(t.userId, t.teamId),
@@ -95,11 +95,11 @@ const teamsToProjects = pgTable(
 
 const tasks = pgTable("tasks", {
   id_task: serial("id").primaryKey(),
-  id_project: integer("project_id").references(() => projects.id),
+  id_project: integer("project_id").references(() => projects.id_project),
   task_name: text("name"),
   description: text("description"),
   deadline: timestamp("deadlineAt"),
-  id_parent_task: integer("parent_task_id").references(() => tasks.id),
+  id_parent_task: integer("parent_task_id").references(() => tasks.id_task),
 });
 
 const tasksRelations = relations("tasks", ({ one, many }) => ({
