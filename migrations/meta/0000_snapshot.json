@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "pg",
-  "id": "e5062d87-bf92-40de-9e06-f6c2d47f6e65",
+  "id": "76d26296-73a8-4f57-961d-9616898e336d",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "teams": {
@@ -194,10 +194,10 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "teams_to_projects_team_id_users_id_fk": {
-          "name": "teams_to_projects_team_id_users_id_fk",
+        "teams_to_projects_team_id_teams_id_fk": {
+          "name": "teams_to_projects_team_id_teams_id_fk",
           "tableFrom": "teams_to_projects",
-          "tableTo": "users",
+          "tableTo": "teams",
           "columnsFrom": [
             "team_id"
           ],
