@@ -140,22 +140,26 @@ router.delete(
  *        description: Project not found
  */
 router.put(
-  "/",
+  "/:id_project",
   validateRequest({
-    body: z.object({
-      id_project: z.coerce.number(),
-      description: z.string(),
-    }),
+    params: z.object({ id_project: z.coerce.number() }),
+    body: z.object({ description: z.string().optional() }),
   }),
   async (req, res, next) => {
+    const projectToUpdate = {
+      id_project: req.params.id_project,
+      description: req.body.description
+    };
+    
     try {
-      const updatedProject = await ProjectService.updateProject(req.body);
+      const updatedProject = await ProjectService.updateProject(projectToUpdate);
       if (updatedProject) {
         res.status(200).json(updatedProject);
       } else {
         res.status(404).json({ message: "Project not found" });
       }
     } catch (err) {
+      res.status(400).json({ message: "Invalid project data" }); // Handle validation errors
       next(err);
     }
   }

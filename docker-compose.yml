@@ -23,5 +23,17 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_NAME}
 
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/usr/src/app
+    depends_on:
+      - postgres
+    environment:
+      NODE_ENV: test
+    command: ["npm", "test"]
+
 volumes:
   database-data: {}

@@ -21,6 +21,7 @@
   "homepage": "https://github.com/Project-team-DL-7/Task-Manager#readme",
   "dependencies": {
     "chai": "^4.3.10",
+    "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "drizzle-orm": "^0.28.6",
     "express": "^4.18.2",

@@ -17,5 +17,8 @@ RUN npm install swagger-jsdoc swagger-ui-express --save
 # Maybe will be used in production build
 EXPOSE 5000
 
+# Copy the rest of the application code to the working directory
+COPY . .
+
 # Start the application using nodemon
 CMD ["nodemon", "index.js"]

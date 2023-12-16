@@ -4,6 +4,7 @@ const swaggerUi = require("swagger-ui-express");
 const { drizzle } = require("drizzle-orm/postgres-js");
 const { migrate } = require("drizzle-orm/postgres-js/migrator");
 const postgres = require("postgres");
+const cors = require("cors");
 
 // load variables from .env
 require("dotenv").config();
@@ -38,6 +39,8 @@ const swaggerDocs = swaggerJsDoc(swaggerOptions);
 
 const app = express();
 const PORT = process.env.PORT;
+
+app.use(cors()); // Enable CORS for all routes
 
 // use JSONs
 app.use(express.json());
