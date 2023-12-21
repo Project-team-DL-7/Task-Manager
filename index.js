@@ -22,7 +22,7 @@ const db = drizzle(queryClient, {
   schema: schema,
 });
 
-module.exports.db = db
+module.exports.db = db;
 
 // Swagger setup
 const swaggerOptions = {
@@ -42,21 +42,41 @@ const PORT = process.env.PORT;
 
 app.use(cors()); // Enable CORS for all routes
 
+// for auth views
+app.set("views", "./src/views");
+app.set("view engine", "ejs");
+
 // use JSONs
 app.use(express.json());
 
 // Use Swagger
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
+// Session support for passport.js
+var session = require("express-session");
+var SQLiteStore = require("connect-sqlite3")(session);
+var passport = require("passport");
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    store: new SQLiteStore({ db: "sessions.db", dir: "./" }),
+  })
+);
+app.use(passport.authenticate("session"));
+
 const UserController = require("./src/api/controllers/UserController");
 const TeamController = require("./src/api/controllers/TeamController");
 const TaskController = require("./src/api/controllers/TaskController");
 const ProjectController = require("./src/api/controllers/ProjectController");
+const AuthController = require("./src/api/controllers/AuthController");
 
 app.use("/user", UserController);
 app.use("/team", TeamController);
 app.use("/task", TaskController);
 app.use("/project", ProjectController);
+app.use("/", AuthController);
 
 // Only print errors to log
 function errorMiddleware(err, req, res, next) {
@@ -72,4 +92,4 @@ app.listen(PORT, () => {
   );
 });
 
-module.exports.app = app
+module.exports.app = app;

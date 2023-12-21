@@ -8,6 +8,13 @@
       "when": 1702662537215,
       "tag": "0000_initial",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1703082847786,
+      "tag": "0001_federated_credentials",
+      "breakpoints": true
     }
   ]
 }
