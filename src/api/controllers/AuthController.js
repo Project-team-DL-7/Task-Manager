@@ -1,6 +1,7 @@
 const express = require("express");
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oidc");
+const FacebookStrategy = require("passport-facebook");
 const AuthService = require("../../application/AuthService");
 
 const router = express.Router();
@@ -14,6 +15,19 @@ router.get("/login/federated/google", passport.authenticate("google"));
 router.get(
   "/oauth2/redirect/google",
   passport.authenticate("google", {
+    successRedirect: "/",
+    failureRedirect: "/login",
+  })
+);
+
+router.get(
+  "/login/federated/facebook",
+  passport.authenticate("facebook", { scope: ["email"] })
+);
+
+router.get(
+  "/oauth2/redirect/facebook",
+  passport.authenticate("facebook", {
     successRedirect: "/",
     failureRedirect: "/login",
   })
@@ -39,6 +53,29 @@ passport.use(
     async function verify(issuer, profile, cb) {
       try {
         const result = await AuthService.handleVerification(issuer, profile);
+        return cb(null, result);
+      } catch (err) {
+        return cb(err);
+      }
+    }
+  )
+);
+
+passport.use(
+  new FacebookStrategy(
+    {
+      clientID: process.env["FACEBOOK_CLIENT_ID"],
+      clientSecret: process.env["FACEBOOK_CLIENT_SECRET"],
+      callbackURL: "/oauth2/redirect/facebook",
+      state: true,
+      profileFields: ["email", "displayName"],
+    },
+    async function verify(accessToken, refreshToken, profile, cb) {
+      try {
+        const result = await AuthService.handleVerification(
+          profile.provider,
+          profile
+        );
         return cb(null, result);
       } catch (err) {
         return cb(err);

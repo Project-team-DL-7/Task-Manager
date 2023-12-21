@@ -6,7 +6,7 @@ class AuthService {
     console.log(
       `Handle verification for user ${profile.id} with provider ${provider}`
     );
-    console.log(`Users profile: ${profile}`);
+    console.log(`Users profile:`, profile);
     const federatedCredential =
       await FederatedCredentialsRepository.findByProviderAndSubjectId(
         provider,
