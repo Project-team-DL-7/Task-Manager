@@ -40,7 +40,7 @@ const swaggerDocs = swaggerJsDoc(swaggerOptions);
 const app = express();
 const PORT = process.env.PORT;
 
-app.use(cors()); // Enable CORS for all routes
+app.use(cors({ credentials: true, origin: process.env.FE_URL })); // Enable CORS for all routes
 
 // use JSONs
 app.use(express.json());
@@ -70,11 +70,13 @@ const TeamController = require("./src/api/controllers/TeamController");
 const TaskController = require("./src/api/controllers/TaskController");
 const ProjectController = require("./src/api/controllers/ProjectController");
 const AuthController = require("./src/api/controllers/AuthController");
+const MeController = require("./src/api/controllers/MeController");
 
 app.use("/user", UserController);
 app.use("/team", TeamController);
 app.use("/task", TaskController);
 app.use("/project", ProjectController);
+app.use("/me", MeController);
 app.use("/", AuthController);
 
 app.get("/", (req, res) => {

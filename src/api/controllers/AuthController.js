@@ -60,7 +60,7 @@ router.post("/logout", function (req, res, next) {
     if (err) {
       return next(err);
     }
-    res.redirect("/");
+    res.redirect(`${FE_URL}/login`);
   });
 });
 
@@ -130,7 +130,7 @@ passport.use(
 
 passport.serializeUser(function (user, cb) {
   process.nextTick(function () {
-    cb(null, { id: user.id, username: user.username, name: user.name });
+    cb(null, { id: user.id_user, username: user.username, email: user.email });
   });
 });
 
