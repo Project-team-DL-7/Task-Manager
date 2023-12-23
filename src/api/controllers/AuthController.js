@@ -35,11 +35,6 @@ router.post("/signup", async function (req, res, next) {
   }
 });
 
-router.get("/me", (req, res) => {
-  console.log(req.user)
-  return res.send(req.user);
-});
-
 router.get("/login/federated/google", passport.authenticate("google"));
 
 router.get(
