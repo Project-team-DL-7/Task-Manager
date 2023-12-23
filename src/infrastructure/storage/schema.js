@@ -7,6 +7,7 @@ const {
   integer,
   uniqueIndex,
   primaryKey,
+  unique,
 } = require("drizzle-orm/pg-core");
 
 const teams = pgTable(
@@ -146,6 +147,19 @@ const tasksToTeams = pgTable(
   })
 );
 
+const federatedCredentials = pgTable(
+  "federated_credentials",
+  {
+    id: serial("id").primaryKey(),
+    userId: integer("user_id").references(() => users.id_user),
+    provider: text("provider"),
+    subject: text("subject"),
+  },
+  (t) => ({
+    unq: unique().on(t.provider, t.subject),
+  })
+);
+
 module.exports = {
   teams,
   teamsRelations,
@@ -160,4 +174,5 @@ module.exports = {
   tasksRelations,
   tasksToUsers,
   tasksToTeams,
+  federatedCredentials,
 };
