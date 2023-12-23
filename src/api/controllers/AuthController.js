@@ -6,16 +6,13 @@ const FacebookStrategy = require("passport-facebook");
 const AuthService = require("../../application/AuthService");
 
 const router = express.Router();
-
-router.get("/login", function (req, res, next) {
-  res.render("login");
-});
+const { FE_URL } = process.env;
 
 router.post(
   "/login/password",
   passport.authenticate("local", {
     successRedirect: "/",
-    failureRedirect: "/login",
+    failureRedirect: `${FE_URL}/login`,
   })
 );
 
@@ -41,7 +38,7 @@ router.get(
   "/oauth2/redirect/google",
   passport.authenticate("google", {
     successRedirect: "/",
-    failureRedirect: "/login",
+    failureRedirect: `${FE_URL}/login`,
   })
 );
 
@@ -54,7 +51,7 @@ router.get(
   "/oauth2/redirect/facebook",
   passport.authenticate("facebook", {
     successRedirect: "/",
-    failureRedirect: "/login",
+    failureRedirect: `${FE_URL}/login`,
   })
 );
 
