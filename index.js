@@ -42,10 +42,6 @@ const PORT = process.env.PORT;
 
 app.use(cors()); // Enable CORS for all routes
 
-// for auth views
-app.set("views", "./src/views");
-app.set("view engine", "ejs");
-
 // use JSONs
 app.use(express.json());
 
@@ -81,11 +77,22 @@ app.use("/task", TaskController);
 app.use("/project", ProjectController);
 app.use("/", AuthController);
 
-// Only print errors to log
+app.get("/", (req, res) => {
+  return res.redirect(process.env.FE_URL);
+});
+
 function errorMiddleware(err, req, res, next) {
   console.error(err);
-  res.status(500);
-  res.send("Internal Server Error");
+  if (err.constraint_name === "users_username_unique") {
+    res.status(400);
+    res.send("User with this username already exists");
+  } else if (err.constraint_name === "users_email_unique") {
+    res.status(400);
+    res.send("User with this email already exists");
+  } else {
+    res.status(500);
+    res.send("Internal Server Error");
+  }
 }
 app.use(errorMiddleware);
 
