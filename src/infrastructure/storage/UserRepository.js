@@ -12,6 +12,13 @@ class UserRepository {
     return user;
   }
 
+  async findUserByUsername(username) {
+    const user = await db.query.users.findFirst({
+      where: eq(users.username, username),
+    });
+    return user;
+  }
+
   // Add a new user
   async addUser(user) {
     const res = await db

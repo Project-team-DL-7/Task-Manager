@@ -1,10 +1,38 @@
 const FederatedCredentialsRepository = require("../infrastructure/storage/FederatedCredentialsRepository");
 const UserRepository = require("../infrastructure/storage/UserRepository");
+const bcrypt = require("bcrypt");
+const saltRounds = 10;
 
 class AuthService {
-  async handleVerification(provider, profile) {
+  async handlePasswordVerification(username, password) {
+    console.log(`Handle local verification for user ${username}`);
+    const user = await UserRepository.findUserByUsername(username);
+    if (!user) {
+      return null;
+    }
+
+    const result = await bcrypt.compare(password, user.password);
+    if (result) {
+      return user;
+    } else {
+      return null;
+    }
+  }
+
+  async signUp(username, password, email) {
+    let hash = await bcrypt.hash(password, saltRounds);
+    const newUser = await UserRepository.addUser({
+      email,
+      username,
+      password: hash,
+      registrationDate: Date.now(),
+    });
+    return newUser;
+  }
+
+  async handleOAuthVerification(provider, profile) {
     console.log(
-      `Handle verification for user ${profile.id} with provider ${provider}`
+      `Handle OAuth verification for user ${profile.id} with provider ${provider}`
     );
     console.log(`Users profile:`, profile);
     const federatedCredential =

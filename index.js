@@ -49,6 +49,9 @@ app.set("view engine", "ejs");
 // use JSONs
 app.use(express.json());
 
+// for url encoded content type
+app.use(express.urlencoded({ extended: true }));
+
 // Use Swagger
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
