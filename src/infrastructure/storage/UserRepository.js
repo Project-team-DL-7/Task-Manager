@@ -1,6 +1,6 @@
 const { eq } = require("drizzle-orm");
 const User = require("../../domain/User");
-const { users } = require("./schema");
+const { users, usersToTeams } = require("./schema");
 const { db } = require("../../..");
 
 class UserRepository {
@@ -17,6 +17,27 @@ class UserRepository {
       where: eq(users.username, username),
     });
     return user;
+  }
+
+  async findAllUsersEntities(id_user) {
+    const result = await db.query.users.findFirst({
+      where: eq(users.id_user, id_user),
+      columns: {
+        password: false,
+      },
+      with: {
+        usersToTeams: {
+          with: {
+            team: {
+              with: {
+                tasksToTeams: { with: { task: { with: { project: true } } } },
+              },
+            },
+          },
+        },
+      },
+    });
+    return result;
   }
 
   // Add a new user

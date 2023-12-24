@@ -6,9 +6,9 @@ class TeamService {
     return TeamRepository.findTeamById(id_team);
   }
 
-  async createTeam(team) {
+  async createTeam(team, userId) {
     console.log(`Create new Team ${JSON.stringify(team, null, 2)}`);
-    return TeamRepository.addTeam(team);
+    return TeamRepository.addTeam(team, userId);
   }
 
   async deleteTeamById(id_team) {

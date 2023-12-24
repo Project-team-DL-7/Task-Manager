@@ -1,7 +1,7 @@
 const { eq } = require("drizzle-orm");
 const { db } = require("../../..");
 const Team = require("../../domain/Team");
-const { teams } = require("./schema");
+const { teams, usersToTeams } = require("./schema");
 
 class TeamRepository {
   // Find a team by ID
@@ -13,9 +13,17 @@ class TeamRepository {
   }
 
   // Add a new team
-  async addTeam(team) {
-    const res = await db.insert(teams).values(team).returning();
-    return res[0];
+  async addTeam(team, userId) {
+    const newTeam = await db.transaction(async (tx) => {
+      const res = await tx.insert(teams).values(team).returning();
+      const newTeam = res[0];
+      await tx
+        .insert(usersToTeams)
+        .values({ teamId: newTeam.id_team, userId: userId });
+
+      return newTeam;
+    });
+    return newTeam;
   }
 
   // Delete a team by ID

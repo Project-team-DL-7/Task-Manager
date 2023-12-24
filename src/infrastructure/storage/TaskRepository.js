@@ -1,6 +1,6 @@
 const { eq } = require("drizzle-orm");
 const { db } = require("../../..");
-const { tasks } = require("./schema");
+const { tasks, tasksToTeams } = require("./schema");
 
 class TaskRepository {
   // Find a task by ID
@@ -13,11 +13,18 @@ class TaskRepository {
 
   // Add a new task
   async addTask(task) {
-    const createdTask = await db
-      .insert(tasks)
-      .values({ ...task, deadline: new Date(task.deadline) })
-      .returning();
-    return createdTask[0];
+    const newTask = await db.transaction(async (tx) => {
+      const res = await tx
+        .insert(tasks)
+        .values({ ...task, deadline: new Date(task.deadline) })
+        .returning();
+      const newTask = res[0];
+      await tx
+        .insert(tasksToTeams)
+        .values({ teamId: task.id_team, taskId: newTask.id_task });
+      return newTask;
+    });
+    return newTask;
   }
 
   // Delete a task by ID
