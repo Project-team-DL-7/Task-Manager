@@ -73,7 +73,7 @@ router.post(
 
   async (req, res, next) => {
     try {
-      const createdTeam = await TeamService.createTeam(req.body);
+      const createdTeam = await TeamService.createTeam(req.body, req.user.id);
       res.status(201).json(createdTeam);
     } catch (err) {
       next(err);
@@ -101,7 +101,7 @@ router.post(
 router.delete(
   "/:id_team",
   validateRequest({ params: z.object({ id_team: z.coerce.number() }) }),
- async (req, res, next) => {
+  async (req, res, next) => {
     try {
       const result = await TeamService.deleteTeamById(req.params.id_team);
       if (result) {

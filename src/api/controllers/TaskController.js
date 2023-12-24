@@ -74,6 +74,7 @@ router.post(
       task_name: z.string(),
       description: z.string(),
       deadline: z.number(),
+      id_team: z.number(),
     }),
   }),
   async (req, res, next) => {
