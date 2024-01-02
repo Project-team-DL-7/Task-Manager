@@ -1,4 +1,4 @@
-version: '1'
+version: '3'
 services:
   app:
     build:
@@ -8,6 +8,7 @@ services:
       - "${PORT}:${PORT}"
     volumes:
       - .:/usr/src/app
+      - node_modules:/usr/src/app/node_modules
     command: [ "nodemon", "index.js" ]
     depends_on:
       - postgres
@@ -23,17 +24,6 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_NAME}
 
-  test:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    volumes:
-      - .:/usr/src/app
-    depends_on:
-      - postgres
-    environment:
-      NODE_ENV: test
-    command: ["npm", "test"]
-
 volumes:
   database-data: {}
+  node_modules: {}
