@@ -7,6 +7,10 @@ class TaskService {
     return TaskRepository.findTaskById(id_task);
   }
 
+  async getUsersTasks(user_id) {
+    return TaskRepository.findTasksByUserId(user_id)
+  }
+
   async createTask(task) {
     console.log(`Create new Task ${JSON.stringify(task, null, 2)}`);
     return TaskRepository.addTask(task);

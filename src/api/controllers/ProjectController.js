@@ -45,6 +45,32 @@ router.get(
 /**
  * @swagger
  * /project:
+ *  get:
+ *    tags:
+ *      - Project
+ *    description: Fetch all projects accessible by user
+ *    responses:
+ *      '200':
+ *        description: A successful response
+ *      '401':
+ *        description: User not logged in
+ */
+router.get("/", async (req, res, next) => {
+  try {
+    if (req?.user?.id) {
+      const projects = await ProjectService.getUsersProjects(req.user.id);
+      res.status(200).json(projects);
+    } else {
+      res.status(401).send("Unauthorized");
+    }
+  } catch (err) {
+    next(err);
+  }
+});
+
+/**
+ * @swagger
+ * /project:
  *  post:
  *    tags:
  *      - Project
@@ -68,6 +94,7 @@ router.post(
     body: z.object({
       name: z.string(),
       description: z.string(),
+      id_team: z.number(),
     }),
   }),
   async (req, res, next) => {
@@ -149,11 +176,13 @@ router.put(
   async (req, res, next) => {
     const projectToUpdate = {
       id_project: req.params.id_project,
-      description: req.body.description
+      description: req.body.description,
     };
-    
+
     try {
-      const updatedProject = await ProjectService.updateProject(projectToUpdate);
+      const updatedProject = await ProjectService.updateProject(
+        projectToUpdate
+      );
       if (updatedProject) {
         res.status(200).json(updatedProject);
       } else {

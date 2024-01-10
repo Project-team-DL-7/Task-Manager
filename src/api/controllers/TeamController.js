@@ -43,6 +43,32 @@ router.get(
 /**
  * @swagger
  * /team:
+ *  get:
+ *    tags:
+ *      - Team
+ *    description: Fetch all teams accessible by user
+ *    responses:
+ *      '200':
+ *        description: A successful response
+ *      '401':
+ *        description: User not logged in
+ */
+router.get("/", async (req, res, next) => {
+  try {
+    if (req?.user?.id) {
+      const teams = await TeamService.getUsersTeams(req.user.id);
+      res.status(200).json(teams);
+    } else {
+      res.status(401).send("Unauthorized");
+    }
+  } catch (err) {
+    next(err);
+  }
+});
+
+/**
+ * @swagger
+ * /team:
  *  post:
  *    tags:
  *      - Team

@@ -7,6 +7,10 @@ class ProjectService {
     return ProjectRepository.findProjectById(id);
   }
 
+  async getUsersProjects(user_id) {
+    return ProjectRepository.findProjectsByUserId(user_id)
+  }
+
   async createProject(project) {
     console.log(`Create new Project ${JSON.stringify(project, null, 2)}`);
     return ProjectRepository.addProject(project);

@@ -43,6 +43,33 @@ router.get(
 /**
  * @swagger
  * /task:
+ *  get:
+ *    tags:
+ *      - Task
+ *    description: Fetch all tasks accessible by user
+ *    responses:
+ *      '200':
+ *        description: A successful response
+ *      '401':
+ *        description: User not logged in
+ */
+router.get("/", async (req, res, next) => {
+  try {
+    if (req?.user?.id) {
+      const tasks = await TaskService.getUsersTasks(req.user.id);
+      res.status(200).json(tasks);
+    } else {
+      res.status(401).send("Unauthorized");
+    }
+  } catch (err) {
+    next(err);
+  }
+});
+
+
+/**
+ * @swagger
+ * /task:
  *  post:
  *    tags:
  *      - Task

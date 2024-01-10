@@ -1,7 +1,7 @@
 const { eq } = require("drizzle-orm");
 const { db } = require("../../..");
 const Team = require("../../domain/Team");
-const { teams, usersToTeams } = require("./schema");
+const { teams, usersToTeams, users } = require("./schema");
 
 class TeamRepository {
   // Find a team by ID
@@ -10,6 +10,20 @@ class TeamRepository {
       where: eq(teams.id_team, id_team),
     });
     return team;
+  }
+
+  async findTeamsByUserId(id_user) {
+    const res = await db
+      .select({
+        id_team: teams.id_team,
+        team_name: teams.team_name,
+        description: teams.description,
+      })
+      .from(teams)
+      .innerJoin(usersToTeams, eq(teams.id_team, usersToTeams.teamId))
+      .innerJoin(users, eq(users.id_user, usersToTeams.userId))
+      .where(eq(users.id_user, id_user));
+    return res;
   }
 
   // Add a new team
