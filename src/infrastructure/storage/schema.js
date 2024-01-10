@@ -71,6 +71,7 @@ const usersToTeamsRelations = relations(usersToTeams, ({ one }) => ({
 
 const projects = pgTable("projects", {
   id_project: serial("id").primaryKey(),
+  name: text("name"),
   description: text("description"),
 });
 

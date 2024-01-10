@@ -66,6 +66,7 @@ router.post(
   "/",
   validateRequest({
     body: z.object({
+      name: z.string(),
       description: z.string(),
     }),
   }),
