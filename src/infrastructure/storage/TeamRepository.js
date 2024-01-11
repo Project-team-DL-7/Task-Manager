@@ -1,7 +1,7 @@
 const { eq } = require("drizzle-orm");
 const { db } = require("../../..");
 const Team = require("../../domain/Team");
-const { teams, usersToTeams, users } = require("./schema");
+const { teams, teamsToProjects, usersToTeams, users } = require("./schema");
 
 class TeamRepository {
   // Find a team by ID
@@ -42,18 +42,28 @@ class TeamRepository {
 
   // Delete a team by ID
   async deleteTeamById(id_team) {
-    const res = await db
-      .delete(teams)
-      .where(eq(teams.id_team, id_team))
-      .returning();
-    return res.length ? res[0] : null;
+    const res = await db.transaction(async (tx) => {
+      // Delete the corresponding records in the users_to_teams table
+      await tx.delete(usersToTeams).where(eq(usersToTeams.teamId, id_team));
+
+      // Delete the corresponding records in the teams_to_projects table
+      await tx.delete(teamsToProjects).where(eq(teamsToProjects.teamId, id_team));
+
+      // Delete the team
+      const deleteRes = await tx.delete(teams).where(eq(teams.id_team, id_team)).returning();
+      return deleteRes.length ? deleteRes[0] : null;
+    });
+    return res;
   }
 
   // Update team details
   async updateTeam(teamToUpdate) {
     const updatedTeam = await db
       .update(teams)
-      .set({ description: teamToUpdate.description })
+      .set({ 
+        description: teamToUpdate.description,
+        team_name: teamToUpdate.team_name
+      })
       .where(eq(teams.id_team, teamToUpdate.id_team))
       .returning();
     return updatedTeam[0] ?? null;
