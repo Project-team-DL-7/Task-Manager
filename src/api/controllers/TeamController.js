@@ -4,8 +4,11 @@ const Team = require("../../domain/Team");
 const { validateRequest } = require("zod-express-middleware");
 const { z } = require("zod");
 const TeamRepository = require("../../infrastructure/storage/TeamRepository");
+const authenticationMiddleware = require("../../middleware/authenticationMiddleware");
 
 const router = express.Router();
+
+router.use(authenticationMiddleware)
 
 /**
  * @swagger

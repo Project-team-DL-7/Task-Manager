@@ -3,8 +3,11 @@ const ProjectService = require("../../application/ProjectService");
 const Project = require("../../domain/Project");
 const { validateRequest } = require("zod-express-middleware");
 const { z } = require("zod");
+const authenticationMiddleware = require("../../middleware/authenticationMiddleware");
 
 const router = express.Router();
+
+router.use(authenticationMiddleware)
 
 /**
  * @swagger

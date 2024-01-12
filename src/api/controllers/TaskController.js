@@ -4,8 +4,11 @@ const Task = require("../../domain/Task");
 const { validateRequest } = require("zod-express-middleware");
 const { z } = require("zod");
 const TaskRepository = require("../../infrastructure/storage/TaskRepository");
+const authenticationMiddleware = require("../../middleware/authenticationMiddleware");
 
 const router = express.Router();
+
+router.use(authenticationMiddleware)
 
 /**
  * @swagger
