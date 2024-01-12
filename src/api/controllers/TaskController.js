@@ -3,6 +3,7 @@ const TaskService = require("../../application/TaskService");
 const Task = require("../../domain/Task");
 const { validateRequest } = require("zod-express-middleware");
 const { z } = require("zod");
+const TaskRepository = require("../../infrastructure/storage/TaskRepository");
 
 const router = express.Router();
 
@@ -100,6 +101,7 @@ router.post(
   validateRequest({
     body: z.object({
       id_project: z.number(),
+      id_user: z.number(),
       task_name: z.string().min(1),
       description: z.string().min(1),
       deadline: z.number().refine((timestamp) => timestamp >= Date.now(), { message: "Deadline must be in the future" }),
@@ -108,8 +110,20 @@ router.post(
   }),
   async (req, res, next) => {
     try {
-      const createdTask = await TaskService.createTask(req.body);
-      res.status(201).json(createdTask);
+      const result = await TaskService.createTask(req.body);
+      if (typeof result?.id_task === "number") {
+        return res.status(201).json(result);
+      }
+      if (result === TaskRepository.ADD_TASK_PARENT_TASK_DOES_NOT_EXIST) {
+        return res.status(400).json({ message: "Parent task does not exist" })
+      }
+      if (result === TaskRepository.ADD_TASK_USER_DOES_NOT_EXIST) {
+        return res.status(400).json({ message: "User does not exist" })
+      }
+      if (result === TaskRepository.ADD_TASK_PROJECT_DOES_NOT_EXIST) {
+        return res.status(400).json({ message: "Project does not exist" })
+      }
+      throw new Error(result)
     } catch (err) {
       next(err);
     }

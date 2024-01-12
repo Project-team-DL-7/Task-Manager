@@ -22,6 +22,13 @@
       "when": 1704907790509,
       "tag": "0002_add_name_to_project",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1705093719576,
+      "tag": "0003_user_tasks_one_to_many",
+      "breakpoints": true
     }
   ]
 }

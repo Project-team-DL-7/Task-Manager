@@ -16,10 +16,12 @@ class TaskRepository {
       .select({
         id_task: tasks.id_task,
         id_project: tasks.id_project,
+        id_user: tasks.id_user,
         task_name: tasks.task_name,
         description: tasks.description,
         deadline: tasks.deadline,
         id_parent_task: tasks.id_parent_task,
+        status: tasks.status
       })
       .from(tasks)
       .innerJoin(projects, eq(tasks.id_project, projects.id_project))
@@ -32,15 +34,31 @@ class TaskRepository {
   }
 
   // Add a new task
+  ADD_TASK_PROJECT_DOES_NOT_EXIST = "ADD_TASK_PROJECT_DOES_NOT_EXIST"
+  ADD_TASK_USER_DOES_NOT_EXIST = "ADD_TASK_USER_DOES_NOT_EXIST"
+  ADD_TASK_PARENT_TASK_DOES_NOT_EXIST = "ADD_TASK_PARENT_TASK_DOES_NOT_EXIST"
   async addTask(task) {
-    const newTask = await db.transaction(async (tx) => {
-      const res = await tx
-        .insert(tasks)
-        .values({ ...task, deadline: new Date(task.deadline) })
-        .returning();
-      return res[0];
-    });
-    return newTask;
+    try {
+      const newTask = await db.transaction(async (tx) => {
+        const res = await tx
+          .insert(tasks)
+          .values({ ...task, deadline: new Date(task.deadline) })
+          .returning();
+        return res[0];
+      });
+      return newTask;
+    } catch (err) {
+      if (err.constraint_name === "tasks_project_id_projects_id_fk") {
+        return this.ADD_TASK_PROJECT_DOES_NOT_EXIST
+      }
+      if (err.constraint_name === "tasks_user_id_users_id_fk") {
+        return this.ADD_TASK_USER_DOES_NOT_EXIST
+      }
+      if (err.constraint_name === "tasks_parent_task_id_tasks_id_fk") {
+        return this.ADD_TASK_PARENT_TASK_DOES_NOT_EXIST
+      }
+      throw new Error(err)
+    }
   }
 
   // Delete a task by ID

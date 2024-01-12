@@ -40,7 +40,7 @@ const users = pgTable("users", {
 
 const usersRelations = relations(users, ({ many }) => ({
   usersToTeams: many(usersToTeams),
-  tasksToUsers: many(tasksToUsers),
+  tasks: many(tasks),
 }));
 
 const usersToTeams = pgTable(
@@ -98,6 +98,7 @@ const teamsToProjects = pgTable(
 const tasks = pgTable("tasks", {
   id_task: serial("id").primaryKey(),
   id_project: integer("project_id").references(() => projects.id_project),
+  id_user: integer("user_id").references(() => users.id_user),
   task_name: text("name"),
   description: text("description"),
   deadline: timestamp("deadlineAt"),
@@ -110,7 +111,10 @@ const tasksRelations = relations(tasks, ({ one, many }) => ({
     fields: [tasks.id_project],
     references: [projects.id_project],
   }),
-  tasksToUsers: many(tasksToUsers),
+  user: one(users, {
+    fields: [tasks.id_user],
+    refereces: [users.id_user]
+  }),
   tasksToTeams: many(tasksToTeams),
   parentTask: one(tasks, {
     fields: [tasks.id_parent_task],
@@ -118,21 +122,6 @@ const tasksRelations = relations(tasks, ({ one, many }) => ({
   }),
   childTasks: many(tasks),
 }));
-
-const tasksToUsers = pgTable(
-  "tasks_to_users",
-  {
-    taskId: integer("task_id")
-      .notNull()
-      .references(() => tasks.id_task),
-    userId: integer("user_id")
-      .notNull()
-      .references(() => users.id_user),
-  },
-  (t) => ({
-    pk: primaryKey(t.taskId, t.userId),
-  })
-);
 
 const tasksToTeams = pgTable(
   "tasks_to_teams",
@@ -185,7 +174,6 @@ module.exports = {
   teamsToProjects,
   tasks,
   tasksRelations,
-  tasksToUsers,
   tasksToTeams,
   tasksToTeamsRelations,
   federatedCredentials,
