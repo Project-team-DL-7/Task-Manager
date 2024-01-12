@@ -3,6 +3,7 @@ const TeamService = require("../../application/TeamService");
 const Team = require("../../domain/Team");
 const { validateRequest } = require("zod-express-middleware");
 const { z } = require("zod");
+const TeamRepository = require("../../infrastructure/storage/TeamRepository");
 
 const router = express.Router();
 
@@ -102,7 +103,7 @@ router.post(
       const createdTeam = await TeamService.createTeam(req.body, req.user.id);
       res.status(201).json(createdTeam);
     } catch (err) {
-      next(err);
+      res.status(400).json({ message: "Team with this name already exists" });
     }
   }
 );
@@ -194,5 +195,31 @@ router.put(
     }
   }
 );
+
+router.post(
+  "/:id_team/invite/:id_user",
+  validateRequest({ params: z.object({ id_team: z.coerce.number(), id_user: z.coerce.number() }) }),
+  async (req, res, next) => {
+    try {
+      const result = await TeamService.inviteUser(req.params.id_team, req.params.id_user);
+      if (typeof result?.userId === "number") {
+        return res.status(201).json({ message: "User invited successfully" })
+      }
+      if (result === TeamRepository.INVITE_USER_INVITATION_ALREADY_EXISTS) {
+        return res.status(400).json({ message: "User already invited" })
+      }
+      if (result === TeamRepository.INVITE_USER_TEAM_DOES_NOT_EXIST) {
+        return res.status(400).json({ message: "Team does not exist" })
+      }
+      if (result === TeamRepository.INVITE_USER_USER_DOES_NOT_EXIST) {
+        return res.status(400).json({ message: "User does not exist" })
+      }
+      throw new Error(result)
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
 
 module.exports = router;
