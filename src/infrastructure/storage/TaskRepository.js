@@ -20,6 +20,7 @@ class TaskRepository {
         description: tasks.description,
         deadline: tasks.deadline,
         id_parent_task: tasks.id_parent_task,
+        status: tasks.status
       })
       .from(tasks)
       .innerJoin(projects, eq(tasks.id_project, projects.id_project))
