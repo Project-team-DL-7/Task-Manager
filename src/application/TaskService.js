@@ -21,7 +21,7 @@ class TaskService {
     return TaskRepository.deleteTaskById(id_task);
   }
 
- async  updateTask(task) {
+  async  updateTask(task) {
     console.log(`Update Task ${JSON.stringify(task, null, 2)}`);
     return TaskRepository.updateTask(task);
   }

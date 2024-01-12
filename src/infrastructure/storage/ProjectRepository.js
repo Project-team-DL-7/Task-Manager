@@ -23,6 +23,7 @@ class ProjectRepository {
         id_project: projects.id_project,
         name: projects.name,
         description: projects.description,
+        id_team: teams.id_team,
       })
       .from(projects)
       .innerJoin(
@@ -68,7 +69,7 @@ class ProjectRepository {
       .update(projects)
       .set({
         description: projectToUpdate.description,
-        name: projectToUpdate.name // Add this line
+        name: projectToUpdate.name
       })
       .where(eq(projects.id_project, projectToUpdate.id_project))
       .returning();
