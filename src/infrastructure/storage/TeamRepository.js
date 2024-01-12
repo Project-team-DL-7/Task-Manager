@@ -1,7 +1,7 @@
 const { eq } = require("drizzle-orm");
 const { db } = require("../../..");
 const Team = require("../../domain/Team");
-const { teams, teamsToProjects, usersToTeams, users } = require("./schema");
+const { teams, teamsToProjects, usersToTeams, users, usersToTeamsRelations } = require("./schema");
 
 class TeamRepository {
   // Find a team by ID
@@ -60,13 +60,35 @@ class TeamRepository {
   async updateTeam(teamToUpdate) {
     const updatedTeam = await db
       .update(teams)
-      .set({ 
+      .set({
         description: teamToUpdate.description,
         team_name: teamToUpdate.team_name
       })
       .where(eq(teams.id_team, teamToUpdate.id_team))
       .returning();
     return updatedTeam[0] ?? null;
+  }
+
+  INVITE_USER_TEAM_DOES_NOT_EXIST = "INVITE_USER_TEAM_DOES_NOT_EXIST"
+  INVITE_USER_USER_DOES_NOT_EXIST = "INVITE_USER_USER_DOES_NOT_EXIST"
+  INVITE_USER_INVITATION_ALREADY_EXISTS = "INVITE_USER_INVITATION_ALREADY_EXISTS"
+  async inviteUser(id_team, id_user) {
+    try {
+      const res = await db.insert(usersToTeams).values({ teamId: id_team, userId: id_user }).returning()
+      return res[0]
+    }
+    catch (err) {
+      if (err.constraint_name === "users_to_teams_user_id_team_id") {
+        return this.INVITE_USER_INVITATION_ALREADY_EXISTS
+      }
+      if (err.constraint_name === "users_to_teams_team_id_teams_id_fk") {
+        return this.INVITE_USER_TEAM_DOES_NOT_EXIST
+      }
+      if (err.constraint_name === "users_to_teams_user_id_users_id_fk") {
+        return this.INVITE_USER_USER_DOES_NOT_EXIST
+      }
+      throw new Error(err)
+    }
   }
 }
 

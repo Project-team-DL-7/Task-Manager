@@ -83,6 +83,7 @@ app.get("/", (req, res) => {
   return res.redirect(process.env.FE_URL);
 });
 
+// TODO: refactor
 function errorMiddleware(err, req, res, next) {
   console.error(err);
   if (err.constraint_name === "users_username_unique") {
