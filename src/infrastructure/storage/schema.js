@@ -102,6 +102,7 @@ const tasks = pgTable("tasks", {
   description: text("description"),
   deadline: timestamp("deadlineAt"),
   id_parent_task: integer("parent_task_id").references(() => tasks.id_task),
+  status: text("status").default('TO DO')
 });
 
 const tasksRelations = relations(tasks, ({ one, many }) => ({

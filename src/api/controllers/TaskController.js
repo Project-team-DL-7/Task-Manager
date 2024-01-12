@@ -89,6 +89,8 @@ router.get("/", async (req, res, next) => {
  *            type: string
  *          deadline:
  *            type: integer
+ *          status:
+ *            type: string
  *    responses:
  *      '201':
  *        description: Task created
@@ -101,6 +103,7 @@ router.post(
       task_name: z.string(),
       description: z.string(),
       deadline: z.number(),
+      status: z.string(),
     }),
   }),
   async (req, res, next) => {
@@ -171,6 +174,8 @@ router.delete(
  *            type: string
  *          deadline:
  *            type: integer
+ *          status:
+ *            type: string
  *    responses:
  *      '200':
  *        description: Task updated
@@ -185,6 +190,7 @@ router.put(
       task_name: z.string(),
       description: z.string(),
       deadline: z.number(),
+      status: z.string(),
     }),
   }),
   async (req, res, next) => {
