@@ -98,9 +98,9 @@ router.post(
   validateRequest({
     body: z.object({
       id_project: z.number(),
-      task_name: z.string(),
-      description: z.string(),
-      deadline: z.number(),
+      task_name: z.string().min(1),
+      description: z.string().min(1),
+      deadline: z.number().refine((timestamp) => timestamp >= Date.now(), { message: "Deadline must be in the future" })
     }),
   }),
   async (req, res, next) => {
