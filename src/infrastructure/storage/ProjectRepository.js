@@ -51,18 +51,25 @@ class ProjectRepository {
 
   // Delete a project by ID
   async deleteProjectById(id_project) {
-    const res = await db
-      .delete(projects)
-      .where(eq(projects.id_project, id_project))
-      .returning();
-    return res.length ? res[0] : null;
+    const res = await db.transaction(async (tx) => {
+      // Delete the corresponding records in the teams_to_projects table
+      await tx.delete(teamsToProjects).where(eq(teamsToProjects.projectId, id_project));
+
+      // Delete the project
+      const deleteRes = await tx.delete(projects).where(eq(projects.id_project, id_project)).returning();
+      return deleteRes.length ? deleteRes[0] : null;
+    });
+    return res;
   }
 
   // Update project details
   async updateProject(projectToUpdate) {
     const updatedProject = await db
       .update(projects)
-      .set({ description: projectToUpdate.description })
+      .set({
+        description: projectToUpdate.description,
+        name: projectToUpdate.name // Add this line
+      })
       .where(eq(projects.id_project, projectToUpdate.id_project))
       .returning();
     return updatedProject[0] ?? null;

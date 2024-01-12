@@ -171,12 +171,16 @@ router.put(
   "/:id_project",
   validateRequest({
     params: z.object({ id_project: z.coerce.number() }),
-    body: z.object({ description: z.string().optional() }),
+    body: z.object({ 
+      description: z.string().optional(),
+      name: z.string().optional()
+    }),
   }),
   async (req, res, next) => {
     const projectToUpdate = {
       id_project: req.params.id_project,
       description: req.body.description,
+      name: req.body.name
     };
 
     try {
