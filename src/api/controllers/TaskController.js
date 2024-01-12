@@ -200,7 +200,9 @@ router.put(
   "/",
   validateRequest({
     body: z.object({
+      id_task: z.number(),
       id_project: z.number(),
+      id_user: z.number(),
       task_name: z.string(),
       description: z.string(),
       deadline: z.number(),
