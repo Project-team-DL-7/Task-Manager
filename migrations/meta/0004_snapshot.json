@@ -1,8 +1,8 @@
 {
   "version": "5",
   "dialect": "pg",
-  "id": "963b00eb-55ba-4625-bd47-278ded33d4a1",
-  "prevId": "8e955a0a-85ae-49af-8cea-83327bb009c0",
+  "id": "8e955a0a-85ae-49af-8cea-83327bb009c0",
+  "prevId": "a8e8d8b1-1380-42a8-a7bd-280f429e7e18",
   "tables": {
     "teams": {
       "name": "teams",
@@ -335,6 +335,63 @@
         }
       },
       "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "tasks_to_teams": {
+      "name": "tasks_to_teams",
+      "schema": "",
+      "columns": {
+        "task_id": {
+          "name": "task_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "team_id": {
+          "name": "team_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "tasks_to_teams_task_id_tasks_id_fk": {
+          "name": "tasks_to_teams_task_id_tasks_id_fk",
+          "tableFrom": "tasks_to_teams",
+          "tableTo": "tasks",
+          "columnsFrom": [
+            "task_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "tasks_to_teams_team_id_teams_id_fk": {
+          "name": "tasks_to_teams_team_id_teams_id_fk",
+          "tableFrom": "tasks_to_teams",
+          "tableTo": "teams",
+          "columnsFrom": [
+            "team_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "tasks_to_teams_task_id_team_id": {
+          "name": "tasks_to_teams_task_id_team_id",
+          "columns": [
+            "task_id",
+            "team_id"
+          ]
+        }
+      },
       "uniqueConstraints": {}
     },
     "federated_credentials": {
