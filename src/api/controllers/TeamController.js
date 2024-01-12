@@ -92,8 +92,8 @@ router.post(
   "/",
   validateRequest({
     body: z.object({
-      team_name: z.string(),
-      description: z.string(),
+      team_name: z.string().min(1),
+      description: z.string().min(1),
     }),
   }),
 
