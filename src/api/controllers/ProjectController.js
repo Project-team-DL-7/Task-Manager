@@ -92,8 +92,8 @@ router.post(
   "/",
   validateRequest({
     body: z.object({
-      name: z.string(),
-      description: z.string(),
+      name: z.string().min(1),
+      description: z.string().min(1),
       id_team: z.number(),
     }),
   }),
@@ -171,7 +171,7 @@ router.put(
   "/:id_project",
   validateRequest({
     params: z.object({ id_project: z.coerce.number() }),
-    body: z.object({ 
+    body: z.object({
       description: z.string().optional(),
       name: z.string().optional()
     }),
