@@ -24,6 +24,10 @@ class TeamService {
     console.log(`Update Team ${JSON.stringify(team, null, 2)}`);
     return TeamRepository.updateTeam(team);
   }
+
+  async inviteUser(id_team, id_user) {
+    return TeamRepository.inviteUser(id_team, id_user)
+  }
 }
 
 module.exports = new TeamService();
