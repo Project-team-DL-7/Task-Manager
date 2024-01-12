@@ -1,6 +1,6 @@
 const { eq } = require("drizzle-orm");
 const { db } = require("../../..");
-const { tasks, tasksToTeams, teams, usersToTeams, users } = require("./schema");
+const { tasks, projects, teamsToProjects, teams, usersToTeams, users } = require("./schema");
 
 class TaskRepository {
   // Find a task by ID
@@ -22,8 +22,9 @@ class TaskRepository {
         id_parent_task: tasks.id_parent_task,
       })
       .from(tasks)
-      .innerJoin(tasksToTeams, eq(tasks.id_task, tasksToTeams.taskId))
-      .innerJoin(teams, eq(tasksToTeams.teamId, teams.id_team))
+      .innerJoin(projects, eq(tasks.id_project, projects.id_project))
+      .innerJoin(teamsToProjects, eq(projects.id_project, teamsToProjects.projectId))
+      .innerJoin(teams, eq(teamsToProjects.teamId, teams.id_team))
       .innerJoin(usersToTeams, eq(teams.id_team, usersToTeams.teamId))
       .innerJoin(users, eq(users.id_user, usersToTeams.userId))
       .where(eq(users.id_user, id_user));
