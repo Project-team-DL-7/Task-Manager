@@ -29,6 +29,13 @@
       "when": 1705093719576,
       "tag": "0003_user_tasks_one_to_many",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1705097620419,
+      "tag": "0004_remove_tasks_to_teams",
+      "breakpoints": true
     }
   ]
 }

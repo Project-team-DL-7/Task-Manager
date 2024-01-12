@@ -27,7 +27,6 @@ const teams = pgTable(
 const teamsRelations = relations(teams, ({ many }) => ({
   usersToTeams: many(usersToTeams),
   teamsToProjects: many(teamsToProjects),
-  tasksToTeams: many(tasksToTeams),
 }));
 
 const users = pgTable("users", {
@@ -115,38 +114,11 @@ const tasksRelations = relations(tasks, ({ one, many }) => ({
     fields: [tasks.id_user],
     refereces: [users.id_user]
   }),
-  tasksToTeams: many(tasksToTeams),
   parentTask: one(tasks, {
     fields: [tasks.id_parent_task],
     references: [tasks.id_task],
   }),
   childTasks: many(tasks),
-}));
-
-const tasksToTeams = pgTable(
-  "tasks_to_teams",
-  {
-    taskId: integer("task_id")
-      .notNull()
-      .references(() => tasks.id_task),
-    teamId: integer("team_id")
-      .notNull()
-      .references(() => teams.id_team),
-  },
-  (t) => ({
-    pk: primaryKey(t.taskId, t.teamId),
-  })
-);
-
-const tasksToTeamsRelations = relations(tasksToTeams, ({ one }) => ({
-  task: one(tasks, {
-    fields: [tasksToTeams.taskId],
-    references: [tasks.id_task],
-  }),
-  team: one(teams, {
-    fields: [tasksToTeams.teamId],
-    references: [teams.id_team],
-  }),
 }));
 
 const federatedCredentials = pgTable(
@@ -174,7 +146,5 @@ module.exports = {
   teamsToProjects,
   tasks,
   tasksRelations,
-  tasksToTeams,
-  tasksToTeamsRelations,
   federatedCredentials,
 };
