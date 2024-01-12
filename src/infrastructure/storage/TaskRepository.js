@@ -37,11 +37,7 @@ class TaskRepository {
         .insert(tasks)
         .values({ ...task, deadline: new Date(task.deadline) })
         .returning();
-      const newTask = res[0];
-      await tx
-        .insert(tasksToTeams)
-        .values({ teamId: task.id_team, taskId: newTask.id_task });
-      return newTask;
+      return res[0];
     });
     return newTask;
   }
