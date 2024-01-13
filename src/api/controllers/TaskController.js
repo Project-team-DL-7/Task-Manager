@@ -4,8 +4,16 @@ const Task = require("../../domain/Task");
 const { validateRequest } = require("zod-express-middleware");
 const { z } = require("zod");
 const TaskRepository = require("../../infrastructure/storage/TaskRepository");
+const authenticationMiddleware = require("../../middleware/authenticationMiddleware");
+const isTaskAccessibleByUser = require("../../authorization/strategies/isTaskAccessibleByUser");
+const AuthorizationPipeline = require("../../authorization/AuthorizationPipeline");
+const TeamService = require("../../application/TeamService");
+const isProjectPartOfTeam = require("../../authorization/strategies/isProjectPartOfTeam");
+const isUserPartOfTeam = require("../../authorization/strategies/isUserPartOfTeam");
 
 const router = express.Router();
+
+router.use(authenticationMiddleware)
 
 /**
  * @swagger
@@ -28,6 +36,9 @@ router.get(
   "/:id_task",
   validateRequest({ params: z.object({ id_task: z.coerce.number() }) }),
   async (req, res, next) => {
+    const errors = await AuthorizationPipeline(isTaskAccessibleByUser(req.params.id_task, req.user.id))
+    if (errors.length) return res.status(403).json(errors)
+
     try {
       const task = await TaskService.getTaskById(req.params.id_task);
       if (task) {
@@ -109,6 +120,14 @@ router.post(
     }),
   }),
   async (req, res, next) => {
+    const team = await TeamService.getTeamByProjectId(req.body.id_project)
+    const errors = await AuthorizationPipeline(
+      isProjectPartOfTeam(req.body.id_project, team?.id_team ?? -1),
+      isUserPartOfTeam(req.body.id_user, team?.id_team ?? -1),
+      ...(req.body.parent_task_id ? isTaskAccessibleByUser(req.body.parent_task_id, req.user.id) : []),
+    )
+    if (errors.length) return res.status(403).json(errors)
+
     try {
       const result = await TaskService.createTask(req.body);
       if (typeof result?.id_task === "number") {
@@ -151,6 +170,10 @@ router.delete(
   "/:id_task",
   validateRequest({ params: z.object({ id_task: z.coerce.number() }) }),
   async (req, res, next) => {
+    const errors = await AuthorizationPipeline(
+      isTaskAccessibleByUser(req.params.id_task, req.user.id)
+    )
+    if (errors.length) return res.status(403).json(errors)
     try {
       const result = await TaskService.deleteTaskById(req.params.id_task);
       if (result) {
@@ -210,6 +233,16 @@ router.put(
     }),
   }),
   async (req, res, next) => {
+    const team = await TeamService.getTeamByProjectId(req.body.id_project)
+    const errors = await AuthorizationPipeline(
+      isProjectPartOfTeam(req.body.id_project, team?.id_team ?? -1),
+      isUserPartOfTeam(req.body.id_user, team?.id_team ?? -1),
+      ...(req.body.parent_task_id ? isTaskAccessibleByUser(req.body.parent_task_id, req.user.id) : []),
+      isTaskAccessibleByUser(req.body.id_task, req.user.id)
+    )
+    if (errors.length) return res.status(403).json(errors)
+
+    // TODO: handle errors same way as in POST
     try {
       const updatedTask = await TaskService.updateTask(req.body);
       if (updatedTask) {

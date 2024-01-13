@@ -21,9 +21,17 @@ class TaskService {
     return TaskRepository.deleteTaskById(id_task);
   }
 
-  async  updateTask(task) {
+  async updateTask(task) {
     console.log(`Update Task ${JSON.stringify(task, null, 2)}`);
     return TaskRepository.updateTask(task);
+  }
+
+  async isTaskPartOfTeam(id_task, id_team) {
+    return TaskRepository.isTaskPartOfTeam(id_task, id_team)
+  }
+
+  async isTaskAccesibleByUser(id_task, id_user) {
+    return TaskRepository.isTaskAccesibleByUser(id_task, id_user)
   }
 }
 

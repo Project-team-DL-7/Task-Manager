@@ -3,8 +3,13 @@ const ProjectService = require("../../application/ProjectService");
 const Project = require("../../domain/Project");
 const { validateRequest } = require("zod-express-middleware");
 const { z } = require("zod");
+const authenticationMiddleware = require("../../middleware/authenticationMiddleware");
+const TeamService = require("../../application/TeamService");
+const AuthorizationPipeline = require("../../authorization/AuthorizationPipeline");
 
 const router = express.Router();
+
+router.use(authenticationMiddleware)
 
 /**
  * @swagger
@@ -27,6 +32,13 @@ router.get(
   "/:id_project",
   validateRequest({ params: z.object({ id_project: z.coerce.number() }) }),
   async (req, res, next) => {
+    const team = await TeamService.getTeamByProjectId(req.params.id_project)
+    const errors = await AuthorizationPipeline(
+      isProjectPartOfTeam(req.params.id_project, team?.id_team ?? -1),
+      isUserPartOfTeam(req.user.id, team?.id_team ?? -1),
+    )
+    if (errors.length) return res.status(403).json(errors)
+
     try {
       const project = await ProjectService.getProjectById(
         req.params.id_project
@@ -98,6 +110,11 @@ router.post(
     }),
   }),
   async (req, res, next) => {
+    const errors = await AuthorizationPipeline(
+      isUserPartOfTeam(req.user.id, req.body.id_team),
+    )
+    if (errors.length) return res.status(403).json(errors)
+
     try {
       const createdProject = await ProjectService.createProject(req.body);
       res.status(201).json(createdProject);
@@ -128,6 +145,13 @@ router.delete(
   "/:id_project",
   validateRequest({ params: z.object({ id_project: z.coerce.number() }) }),
   async (req, res, next) => {
+    const team = await TeamService.getTeamByProjectId(req.params.id_project)
+    const errors = await AuthorizationPipeline(
+      isProjectPartOfTeam(req.params.id_project, team?.id_team ?? -1),
+      isUserPartOfTeam(req.user.id, team?.id_team ?? -1),
+    )
+    if (errors.length) return res.status(403).json(errors)
+
     try {
       const result = await ProjectService.deleteProjectById(
         req.params.id_project
@@ -168,24 +192,25 @@ router.delete(
  *        description: Project not found
  */
 router.put(
-  "/:id_project",
+  "/",
   validateRequest({
-    params: z.object({ id_project: z.coerce.number() }),
     body: z.object({
+      id_project: z.coerce.number(),
       description: z.string().optional(),
       name: z.string().optional()
     }),
   }),
   async (req, res, next) => {
-    const projectToUpdate = {
-      id_project: req.params.id_project,
-      description: req.body.description,
-      name: req.body.name
-    };
+    const team = await TeamService.getTeamByProjectId(req.body.id_project)
+    const errors = await AuthorizationPipeline(
+      isProjectPartOfTeam(req.body.id_project, team?.id_team ?? -1),
+      isUserPartOfTeam(req.user.id, team?.id_team ?? -1),
+    )
+    if (errors.length) return res.status(403).json(errors)
 
     try {
       const updatedProject = await ProjectService.updateProject(
-        projectToUpdate
+        req.body
       );
       if (updatedProject) {
         res.status(200).json(updatedProject);
@@ -193,7 +218,7 @@ router.put(
         res.status(404).json({ message: "Project not found" });
       }
     } catch (err) {
-      res.status(400).json({ message: "Invalid project data" }); // Handle validation errors
+      res.status(400).json({ message: "Invalid project data" });
       next(err);
     }
   }

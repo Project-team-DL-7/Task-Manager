@@ -25,6 +25,10 @@ class ProjectService {
     console.log(`Update Project ${JSON.stringify(project, null, 2)}`);
     return ProjectRepository.updateProject(project);
   }
+
+  async isProjectPartOfTeam(id_project, id_team) {
+    return ProjectRepository.isProjectPartOfTeam(id_project, id_team)
+  }
 }
 
 module.exports = new ProjectService();

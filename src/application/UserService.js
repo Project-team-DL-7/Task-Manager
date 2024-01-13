@@ -7,6 +7,10 @@ class UserService {
     return UserRepository.findUserById(id_user);
   }
 
+  async getUsersByTeamId(id_team) {
+    return UserRepository.findUsersByTeamId(id_team)
+  }
+
   async getAllUsersEntities(id_user) {
     const res = await UserRepository.findAllUsersEntities(id_user);
     const teams = res.usersToTeams.map((userToTeam) => userToTeam.team);
@@ -33,6 +37,11 @@ class UserService {
     console.log(`Update User ${JSON.stringify(user, null, 2)}`);
     return UserRepository.updateUser(user);
   }
+
+  async isUserPartOfTeam(id_user, id_team) {
+    return UserRepository.isUserPartOfTeam(id_user, id_team)
+  }
+
 }
 
 module.exports = new UserService();

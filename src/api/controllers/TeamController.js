@@ -4,8 +4,14 @@ const Team = require("../../domain/Team");
 const { validateRequest } = require("zod-express-middleware");
 const { z } = require("zod");
 const TeamRepository = require("../../infrastructure/storage/TeamRepository");
+const authenticationMiddleware = require("../../middleware/authenticationMiddleware");
+const UserService = require("../../application/UserService");
+const AuthorizationPipeline = require("../../authorization/AuthorizationPipeline");
+const isUserPartOfTeam = require("../../authorization/strategies/isUserPartOfTeam");
 
 const router = express.Router();
+
+router.use(authenticationMiddleware)
 
 /**
  * @swagger
@@ -28,6 +34,9 @@ router.get(
   "/:id_team",
   validateRequest({ params: z.object({ id_team: z.coerce.number() }) }),
   async (req, res, next) => {
+    const errors = await AuthorizationPipeline(isUserPartOfTeam(req.user.id, req.params.id_team))
+    if (errors.length) return res.status(403).json(errors)
+
     try {
       const team = await TeamService.getTeamById(req.params.id_team);
       if (team) {
@@ -129,6 +138,9 @@ router.delete(
   "/:id_team",
   validateRequest({ params: z.object({ id_team: z.coerce.number() }) }),
   async (req, res, next) => {
+    const errors = await AuthorizationPipeline(isUserPartOfTeam(req.user.id, req.params.id_team))
+    if (errors.length) return res.status(403).json(errors)
+
     try {
       const result = await TeamService.deleteTeamById(req.params.id_team);
       if (result) {
@@ -180,6 +192,9 @@ router.put(
     }),
   }),
   async (req, res, next) => {
+    const errors = await AuthorizationPipeline(isUserPartOfTeam(req.user.id, req.body.id_team))
+    if (errors.length) return res.status(403).json(errors)
+
     try {
       const updatedTeam = await TeamService.updateTeam(req.body);
       if (updatedTeam) {
@@ -200,6 +215,9 @@ router.post(
   "/:id_team/invite/:id_user",
   validateRequest({ params: z.object({ id_team: z.coerce.number(), id_user: z.coerce.number() }) }),
   async (req, res, next) => {
+    const errors = await AuthorizationPipeline(isUserPartOfTeam(req.user.id, req.params.id_team))
+    if (errors.length) return res.status(403).json(errors)
+
     try {
       const result = await TeamService.inviteUser(req.params.id_team, req.params.id_user);
       if (typeof result?.userId === "number") {
