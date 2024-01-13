@@ -40,3 +40,33 @@ $ cp .env.example .env
 #### Powershell:
 
     Stop-Process -Id 18706 -Force
+
+
+## Deploying to production
+
+1. Setup gcloud cli
+
+See official google cloud documentation.
+
+2. Make sure VITE_BE_URL in FE .env is set to production BE_URL
+
+3. Build docker image
+
+```
+docker build --file Dockerfile.prod . --tag task-manager-prod
+```
+
+4. Tag the image
+
+```
+docker tag task-manager-prod europe-west3-docker.pkg.dev/uu-task-manager/task-manager-app/task-manager-app
+```
+
+5. Push docker image to GCP artifact registry
+
+```
+docker push europe-west3-docker.pkg.dev/uu-task-manager/task-manager-app/task-manager-app
+```
+
+6. Run docker image in compute engine. Don't forget to specify environment variables.
+

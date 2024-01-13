@@ -7,6 +7,7 @@ const postgres = require("postgres");
 const cors = require("cors");
 const morgan = require('morgan');
 const winston = require('winston');
+const path = require("path");
 
 // load variables from .env
 require("dotenv").config();
@@ -88,16 +89,18 @@ const ProjectController = require("./src/api/controllers/ProjectController");
 const AuthController = require("./src/api/controllers/AuthController");
 const MeController = require("./src/api/controllers/MeController");
 
+// Order of these is important
+// FE static file serving
+app.use('/', express.static('UI/dist'))
+// Api routes
 app.use("/user", UserController);
 app.use("/team", TeamController);
 app.use("/task", TaskController);
 app.use("/project", ProjectController);
 app.use("/me", MeController);
 app.use("/", AuthController);
-
-app.get("/", (req, res) => {
-  return res.redirect(process.env.FE_URL);
-});
+// FE index.html serving (because PWA manages url on FE)
+app.use('*', (req, res) => res.sendFile(path.join(__dirname, 'UI/dist', 'index.html')));
 
 // TODO: refactor
 function errorMiddleware(err, req, res, next) {
@@ -114,6 +117,7 @@ function errorMiddleware(err, req, res, next) {
   }
 }
 app.use(errorMiddleware);
+
 
 app.listen(PORT, () => {
   console.log(
