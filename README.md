@@ -40,3 +40,25 @@ $ cp .env.example .env
 #### Powershell:
 
     Stop-Process -Id 18706 -Force
+
+
+## Deploying to production
+
+1. Setup gcloud cli
+
+See official google cloud documentation.
+
+2. Build docker image
+
+```
+docker build --file Dockerfile.prod . --tag task-manager-prod
+```
+
+3. Push docker image to GCP artifact registry
+
+```
+docker push europe-west3-docker.pkg.dev/uu-task-manager/task-manager-app/task-manager-app
+```
+
+4. Run docker image in compute engine. Don't forget to specify environment variables.
+
