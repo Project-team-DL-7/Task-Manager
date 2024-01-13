@@ -29,6 +29,7 @@
     "drizzle-orm": "^0.28.6",
     "express": "^4.18.2",
     "express-session": "^1.17.3",
+    "morgan": "^1.10.0",
     "passport": "^0.7.0",
     "passport-facebook": "^3.0.0",
     "passport-google-oidc": "^0.1.0",
@@ -37,6 +38,7 @@
     "postgres": "^3.4.3",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.0",
+    "winston": "^3.11.0",
     "zod": "^3.22.4",
     "zod-express-middleware": "^1.4.0"
   },
