@@ -6,7 +6,7 @@ const saltRounds = 10;
 class AuthService {
   async handlePasswordVerification(username, password) {
     console.log(`Handle local verification for user ${username}`);
-    const user = await UserRepository.findUserByUsername(username);
+    const user = await UserRepository.findUserByUsernameIncludingPassword(username);
     if (!user) {
       return null;
     }

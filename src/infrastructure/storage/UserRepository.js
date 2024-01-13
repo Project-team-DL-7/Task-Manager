@@ -15,11 +15,8 @@ class UserRepository {
     return user;
   }
 
-  async findUserByUsername(username) {
+  async findUserByUsernameIncludingPassword(username) {
     const user = await db.query.users.findFirst({
-      columns: {
-        password: false
-      },
       where: eq(users.username, username),
     });
     return user;
