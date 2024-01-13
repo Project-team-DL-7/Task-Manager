@@ -48,23 +48,25 @@ $ cp .env.example .env
 
 See official google cloud documentation.
 
-2. Build docker image
+2. Make sure VITE_BE_URL in FE .env is set to production BE_URL
+
+3. Build docker image
 
 ```
 docker build --file Dockerfile.prod . --tag task-manager-prod
 ```
 
-3. Tag the image
+4. Tag the image
 
 ```
 docker tag task-manager-prod europe-west3-docker.pkg.dev/uu-task-manager/task-manager-app/task-manager-app
 ```
 
-4. Push docker image to GCP artifact registry
+5. Push docker image to GCP artifact registry
 
 ```
 docker push europe-west3-docker.pkg.dev/uu-task-manager/task-manager-app/task-manager-app
 ```
 
-5. Run docker image in compute engine. Don't forget to specify environment variables.
+6. Run docker image in compute engine. Don't forget to specify environment variables.
 
