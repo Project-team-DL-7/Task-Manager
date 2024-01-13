@@ -5,6 +5,8 @@ const { drizzle } = require("drizzle-orm/postgres-js");
 const { migrate } = require("drizzle-orm/postgres-js/migrator");
 const postgres = require("postgres");
 const cors = require("cors");
+const morgan = require('morgan');
+const winston = require('winston');
 
 // load variables from .env
 require("dotenv").config();
@@ -64,6 +66,20 @@ app.use(
   })
 );
 app.use(passport.authenticate("session"));
+
+
+// Configure Winston
+const logger = winston.createLogger({
+  level: 'info',
+  format: winston.format.json(),
+  transports: [
+    new winston.transports.File({ filename: 'logfile.log' })
+  ],
+});
+
+// Morgan setup to use Winston
+app.use(morgan('combined', { stream: { write: message => logger.info(message) } }));
+
 
 const UserController = require("./src/api/controllers/UserController");
 const TeamController = require("./src/api/controllers/TeamController");
