@@ -20,7 +20,6 @@
   },
   "homepage": "https://github.com/Project-team-DL-7/Task-Manager#readme",
   "dependencies": {
-    "@neondatabase/serverless": "^0.7.2",
     "bcrypt": "^5.1.1",
     "chai": "^4.3.10",
     "connect-sqlite3": "^0.9.13",
