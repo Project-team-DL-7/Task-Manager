@@ -177,7 +177,7 @@ router.delete(
     try {
       const result = await TaskService.deleteTaskById(req.params.id_task);
       if (result) {
-        res.status(200).json({ message: "Task deleted" });
+        res.status(200).json({ message: "Task and its subtasks deleted successfully" });
       } else {
         res.status(404).json({ message: "Task not found" });
       }

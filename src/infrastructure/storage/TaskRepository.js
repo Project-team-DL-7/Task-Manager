@@ -61,6 +61,15 @@ class TaskRepository {
     }
   }
 
+  // Delete all subtasks of a task
+  async deleteSubTasks(id_task) {
+    const res = await db
+      .delete(tasks)
+      .where(eq(tasks.id_parent_task, id_task))
+      .returning();
+    return res;
+  }
+
   // Delete a task by ID
   async deleteTaskById(id_task) {
     const res = await db

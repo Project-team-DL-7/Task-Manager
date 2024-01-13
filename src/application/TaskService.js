@@ -17,7 +17,12 @@ class TaskService {
   }
 
   async deleteTaskById(id_task) {
-    console.log(`Delete Task with id_task: ${id_task}`);
+    console.log(`Delete Task with id_task: ${id_task} and all its subtasks`);
+
+    // First, delete all subtasks of the task
+    await TaskRepository.deleteSubTasks(id_task);
+
+    // Then, delete the task itself
     return TaskRepository.deleteTaskById(id_task);
   }
 
