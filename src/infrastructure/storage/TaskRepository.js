@@ -1,4 +1,4 @@
-const { eq } = require("drizzle-orm");
+const { eq, and } = require("drizzle-orm");
 const { db } = require("../../..");
 const { tasks, projects, teamsToProjects, teams, usersToTeams, users } = require("./schema");
 
@@ -78,6 +78,23 @@ class TaskRepository {
       .where(eq(tasks.id_task, taskToUpdate.id_task))
       .returning();
     return updatedTask[0] ?? null;
+  }
+
+  async isTaskPartOfTeam(id_task, id_team) {
+    const result = await db.select().from(tasks)
+      .innerJoin(teamsToProjects, eq(tasks.id_project, teamsToProjects.projectId))
+      .where(and(eq(teamsToProjects.teamId, id_team), eq(tasks.id_task, id_task)))
+
+    return result.length !== 0
+  }
+
+  async isTaskAccesibleByUser(id_task, id_user) {
+    const result = await db.select().from(tasks)
+      .innerJoin(teamsToProjects, eq(tasks.id_project, teamsToProjects.projectId))
+      .innerJoin(usersToTeams, eq(usersToTeams.teamId, teamsToProjects.teamId))
+      .where(and(eq(usersToTeams.userId, id_user), eq(tasks.id_task, id_task)))
+
+    return result.length !== 0
   }
 }
 

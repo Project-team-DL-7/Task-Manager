@@ -1,4 +1,4 @@
-const { eq } = require("drizzle-orm");
+const { eq, and } = require("drizzle-orm");
 const { db } = require("../../..");
 const {
   projects,
@@ -74,6 +74,18 @@ class ProjectRepository {
       .where(eq(projects.id_project, projectToUpdate.id_project))
       .returning();
     return updatedProject[0] ?? null;
+  }
+
+  async isProjectPartOfTeam(id_project, id_team) {
+    const result = await db.query.teamsToProjects.findFirst({
+      where:
+        and(
+          eq(teamsToProjects.projectId, id_project),
+          eq(teamsToProjects.teamId, id_team)
+        )
+    })
+
+    return !!result
   }
 }
 

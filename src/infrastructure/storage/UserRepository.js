@@ -1,12 +1,15 @@
-const { eq } = require("drizzle-orm");
+const { eq, and } = require("drizzle-orm");
 const User = require("../../domain/User");
-const { users, usersToTeams } = require("./schema");
+const { usersToTeams, users } = require("./schema");
 const { db } = require("../../..");
 
 class UserRepository {
   // Find a user by ID
   async findUserById(id_user) {
     const user = await db.query.users.findFirst({
+      columns: {
+        password: false
+      },
       where: eq(users.id_user, id_user),
     });
     return user;
@@ -14,9 +17,23 @@ class UserRepository {
 
   async findUserByUsername(username) {
     const user = await db.query.users.findFirst({
+      columns: {
+        password: false
+      },
       where: eq(users.username, username),
     });
     return user;
+  }
+
+  async findUsersByTeamId(id_team) {
+    const res = await db.select({
+      id_user: users.id_user,
+      email: users.email,
+      username: users.username,
+      registrationDate: users.registrationDate
+    }).from(users).innerJoin(usersToTeams, and(eq(usersToTeams.teamId, id_team), eq(usersToTeams.userId, users.id_user)))
+
+    return res;
   }
 
   async findAllUsersEntities(id_user) {
@@ -73,6 +90,20 @@ class UserRepository {
       .returning();
     return updatedUser[0] ?? null;
   }
+
+  async isUserPartOfTeam(id_user, id_team) {
+    const result = await db.query.usersToTeams.findFirst({
+      where:
+        and(
+          eq(usersToTeams.userId, id_user),
+          eq(usersToTeams.teamId, id_team)
+        )
+    })
+
+    return !!result
+  }
+
+
 }
 
 module.exports = new UserRepository();

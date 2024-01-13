@@ -6,6 +6,10 @@ class TeamService {
     return TeamRepository.findTeamById(id_team);
   }
 
+  async getTeamByProjectId(id_project) {
+    return TeamRepository.findTeamByProjectId(id_project)
+  }
+
   async getUsersTeams(id_user) {
     return TeamRepository.findTeamsByUserId(id_user);
   }
