@@ -54,11 +54,17 @@ See official google cloud documentation.
 docker build --file Dockerfile.prod . --tag task-manager-prod
 ```
 
-3. Push docker image to GCP artifact registry
+3. Tag the image
+
+```
+docker tag task-manager-prod europe-west3-docker.pkg.dev/uu-task-manager/task-manager-app/task-manager-app
+```
+
+4. Push docker image to GCP artifact registry
 
 ```
 docker push europe-west3-docker.pkg.dev/uu-task-manager/task-manager-app/task-manager-app
 ```
 
-4. Run docker image in compute engine. Don't forget to specify environment variables.
+5. Run docker image in compute engine. Don't forget to specify environment variables.
 
