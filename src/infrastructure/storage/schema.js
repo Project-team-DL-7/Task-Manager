@@ -112,11 +112,12 @@ const tasksRelations = relations(tasks, ({ one, many }) => ({
   }),
   user: one(users, {
     fields: [tasks.id_user],
-    refereces: [users.id_user]
+    references: [users.id_user]
   }),
   parentTask: one(tasks, {
     fields: [tasks.id_parent_task],
     references: [tasks.id_task],
+    nullable: true,
   }),
   childTasks: many(tasks),
 }));
