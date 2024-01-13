@@ -35,30 +35,4 @@ router.get("/", async (req, res, next) => {
   }
 });
 
-/**
- * @swagger
- * /me/all:
- *  get:
- *    tags:
- *      - Project
- *    description: Fetch all entities accessible by user for FE purposes
- *    responses:
- *      '200':
- *        description: A successful response
- *      '401':
- *        description: User not logged in
- */
-router.get("/all", async (req, res, next) => {
-  try {
-    if (req?.user?.id) {
-      const all = await UserService.getAllUsersEntities(req.user.id);
-      res.status(200).json(all);
-    } else {
-      res.status(401).send("Unauthorized");
-    }
-  } catch (err) {
-    next(err);
-  }
-});
-
 module.exports = router;

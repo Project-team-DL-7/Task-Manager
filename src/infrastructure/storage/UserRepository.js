@@ -1,6 +1,6 @@
 const { eq, and } = require("drizzle-orm");
 const User = require("../../domain/User");
-const { usersToTeams, users } = require("./schema");
+const { usersToTeams, users, teams, teamsToProjects, tasks, projects } = require("./schema");
 const { db } = require("../../..");
 
 class UserRepository {
@@ -31,27 +31,6 @@ class UserRepository {
     }).from(users).innerJoin(usersToTeams, and(eq(usersToTeams.teamId, id_team), eq(usersToTeams.userId, users.id_user)))
 
     return res;
-  }
-
-  async findAllUsersEntities(id_user) {
-    const result = await db.query.users.findFirst({
-      where: eq(users.id_user, id_user),
-      columns: {
-        password: false,
-      },
-      with: {
-        usersToTeams: {
-          with: {
-            team: {
-              with: {
-                tasksToTeams: { with: { task: { with: { project: true } } } },
-              },
-            },
-          },
-        },
-      },
-    });
-    return result;
   }
 
   // Add a new user

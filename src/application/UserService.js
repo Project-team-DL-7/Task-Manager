@@ -11,18 +11,6 @@ class UserService {
     return UserRepository.findUsersByTeamId(id_team)
   }
 
-  async getAllUsersEntities(id_user) {
-    const res = await UserRepository.findAllUsersEntities(id_user);
-    const teams = res.usersToTeams.map((userToTeam) => userToTeam.team);
-    delete res.usersToTeams;
-    teams.forEach((team, i) => {
-      teams[i].tasks = team.tasksToTeams.map((taskToTeam) => taskToTeam.task);
-      delete teams[i].tasksToTeams;
-    });
-    const entitiesFormatted = { ...res, teams };
-    return entitiesFormatted;
-  }
-
   async createUser(user) {
     console.log(`Create new User ${JSON.stringify(user, null, 2)}`);
     return UserRepository.addUser(user);
