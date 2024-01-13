@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon index.js",
+    "prod": "node index.js",
     "start:debug": "node --inspect --watch index.js",
     "test": "npx mocha"
   },
