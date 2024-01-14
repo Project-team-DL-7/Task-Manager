@@ -32,6 +32,10 @@ class TeamService {
   async inviteUser(id_team, id_user) {
     return TeamRepository.inviteUser(id_team, id_user)
   }
+
+  async removeUser(id_team, id_user) {
+    return TeamRepository.removeUser(id_team, id_user)
+  }
 }
 
 module.exports = new TeamService();

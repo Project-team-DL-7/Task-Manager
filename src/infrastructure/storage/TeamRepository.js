@@ -100,6 +100,17 @@ class TeamRepository {
       throw new Error(err)
     }
   }
+
+  async removeUser(id_team, id_user) {
+    try {
+      const res = await db.delete(usersToTeams).where(and(eq(usersToTeams.teamId, id_team), eq(usersToTeams.userId, id_user))).returning()
+      console.log(res)
+      return res.length !== 0
+    }
+    catch (err) {
+      return null
+    }
+  }
 }
 
 module.exports = new TeamRepository();

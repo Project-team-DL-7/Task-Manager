@@ -239,5 +239,26 @@ router.post(
   }
 );
 
+router.post(
+  "/:id_team/remove/:id_user",
+  validateRequest({ params: z.object({ id_team: z.coerce.number(), id_user: z.coerce.number() }) }),
+  async (req, res, next) => {
+    const errors = await AuthorizationPipeline(isUserPartOfTeam(req.user.id, req.params.id_team))
+    if (errors.length) return res.status(403).json(errors)
+
+    try {
+      const result = await TeamService.removeUser(req.params.id_team, req.params.id_user);
+      if(result) {
+        return res.status(200).json({message: "User removed successfully"})
+      }
+      else {
+        return res.status(400).json({message: "User not part of this team"})
+      }
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
 
 module.exports = router;
