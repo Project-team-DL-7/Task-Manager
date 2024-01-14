@@ -34,7 +34,7 @@ COPY sessions.db .
 COPY --from=frontend-builder /usr/src/app/UI/dist /usr/src/app/UI/dist
 
 # Expose port 8000 for the application
-EXPOSE 8000
+EXPOSE 8000 80 443
 
 # Start the application using nodemon
 CMD ["npm", "run", "prod"]
