@@ -44,6 +44,36 @@ router.get(
   }
 );
 
+/**
+ * @swagger
+ * /user/username/{username}:
+ *  get:
+ *    tags:
+ *      - User
+ *    description: Get user ID by username
+ *    parameters:
+ *    - name: username
+ *      in: path
+ *      required: true
+ *    responses:
+ *      '200':
+ *        description: A successful response
+ */
+router.get(
+  "/username/:username",
+  async (req, res, next) => {
+    try {
+      const user = await UserService.getUserByUsername(req.params.username);
+      if (user) {
+        res.status(200).json(user.id_user);
+      } else {
+        res.status(404).json({ message: "User not found" });
+      }
+    } catch (err) {
+      next(err);
+    }
+  }
+);
 
 // These endpoints probably won't be used
 // For user creation there is auth/signup endpoint

@@ -30,6 +30,11 @@ class UserService {
     return UserRepository.isUserPartOfTeam(id_user, id_team)
   }
 
+  async getUserByUsername(username) {
+    console.log(`Get User with username: ${username}`);
+    const user = await UserRepository.findUserByUsernameIncludingPassword(username);
+    return user;
+  }
 }
 
 module.exports = new UserService();
